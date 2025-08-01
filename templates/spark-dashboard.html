@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Management System - Student Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/spark.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section-left">
+                <div class="logo-white">
+                    <i class="fas fa-university"></i>
+                </div>
+                <div class="system-title-white">
+                    <h1>University Management System</h1>
+                    <p>Veer Madho Singh Bhandari Uttarakhand Technical University</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-button active">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>DASHBOARD</span>
+            </div>
+            <div class="nav-button">
+                <i class="fas fa-user-graduate"></i>
+                <span>STUDENT</span>
+            </div>
+            <div class="nav-button">
+                <i class="fas fa-book"></i>
+                <span>ACADEMICS</span>
+            </div>
+            <div class="nav-button">
+                <i class="fas fa-calendar-check"></i>
+                <span>ATTENDANCE</span>
+            </div>
+            <div class="nav-button">
+                <i class="fas fa-chart-bar"></i>
+                <span>REPORTS</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <h2>Dashboard</h2>
+                <div class="semester-selector">
+                    <label for="semester-select">View Performance:</label>
+                    <select id="semester-select" onchange="changeSemesterView()">
+                        <option value="overall">Overall Performance</option>
+                        <option value="1">Semester 1</option>
+                        <option value="2">Semester 2</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Student Information -->
+            <section class="student-info">
+                <div class="info-card">
+                    <h3 class="welcome-text">WELCOME :- {{ student.name }}</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">College Name:</span>
+                            <span class="info-value">{{ student.college }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Roll Number:</span>
+                            <span class="info-value">{{ student.roll_number }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Course Name:</span>
+                            <span class="info-value">{{ student.course }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Year of Admission:</span>
+                            <span class="info-value">{{ student.year_of_admission }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Course Duration:</span>
+                            <span class="info-value">{{ student.course_duration }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Current Progress:</span>
+                            <span class="info-value">{{ student.current_progress }}</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Performance Overview -->
+            <section class="performance-overview">
+                <div class="section-header">
+                    <h3 id="performance-title">Overall Performance Overview</h3>
+                </div>
+                <div class="performance-grid">
+                    <div class="performance-card">
+                        <div class="card-header">
+                            <i class="fas fa-graduation-cap"></i>
+                            <h3 id="cgpa-title">Current CGPA</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="metric-value" id="cgpa-value">{{ academic.cgpa }}</div>
+                            <div class="metric-remark" id="cgpa-remark" style="color: {{ analysis.cgpa_color }}">
+                                {{ analysis.cgpa_remark }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="performance-card">
+                        <div class="card-header">
+                            <i class="fas fa-chart-line"></i>
+                            <h3 id="sgpa-title">Current SGPA</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="metric-value" id="sgpa-value">{{ academic.semesters[-1].sgpa }}</div>
+                            <div class="metric-subtitle" id="sgpa-subtitle">Semester {{ academic.semesters[-1].semester }}</div>
+                        </div>
+                    </div>
+
+                    <div class="performance-card">
+                        <div class="card-header">
+                            <i class="fas fa-calendar-check"></i>
+                            <h3 id="attendance-title">Overall Attendance</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="metric-value" id="attendance-value">{{ academic.overall_attendance }}%</div>
+                            <div class="metric-remark" id="attendance-remark" style="color: {{ analysis.attendance_color }}">
+                                {{ analysis.attendance_remark }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="performance-card">
+                        <div class="card-header">
+                            <i class="fas fa-trophy"></i>
+                            <h3 id="rank-title">Academic Rank</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="metric-value" id="rank-value">12</div>
+                            <div class="metric-subtitle" id="rank-subtitle">Out of 120 students</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Current Semester Details -->
+            <section class="semester-details">
+                <div class="section-header">
+                    <h3 id="semester-details-title">Current Semester Performance</h3>
+                </div>
+                <div class="subjects-table" id="subjects-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Credits</th>
+                                <th>Marks</th>
+                                <th>Grade</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for subject in academic.semesters[-1].subjects %}
+                            <tr>
+                                <td>{{ subject.name }}</td>
+                                <td>{{ subject.credits }}</td>
+                                <td>{{ subject.marks }}</td>
+                                <td class="grade-{{ subject.grade.replace('+', 'plus') }}">{{ subject.grade }}</td>
+                                <td>
+                                    {% if subject.marks >= 85 %}
+                                        <span class="status excellent">Excellent</span>
+                                    {% elif subject.marks >= 75 %}
+                                        <span class="status good">Good</span>
+                                    {% elif subject.marks >= 60 %}
+                                        <span class="status average">Average</span>
+                                    {% else %}
+                                        <span class="status poor">Needs Improvement</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Performance Analysis -->
+            <section class="analysis-section">
+                <div class="section-header">
+                    <h3 id="analysis-title">Performance Analysis</h3>
+                </div>
+                <div class="analysis-grid">
+                    <div class="analysis-card recommendations" id="recommendations-card">
+                        <div class="card-header">
+                            <i class="fas fa-lightbulb"></i>
+                            <h3>Recommendations</h3>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                {% for improvement in analysis.improvements %}
+                                <li>{{ improvement }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="analysis-card strengths" id="strengths-card">
+                        <div class="card-header">
+                            <i class="fas fa-star"></i>
+                            <h3>Strengths</h3>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                {% if academic.cgpa >= 8.5 %}
+                                <li>Consistently high academic performance</li>
+                                {% endif %}
+                                {% if academic.overall_attendance >= 90 %}
+                                <li>Excellent attendance record</li>
+                                {% endif %}
+                                <li>Strong performance in technical subjects</li>
+                                <li>Good problem-solving abilities</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="analysis-card alerts" id="alerts-card">
+                        <div class="card-header">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h3>Areas of Concern</h3>
+                        </div>
+                        <div class="card-content">
+                            <ul>
+                                {% if academic.overall_attendance < 85 %}
+                                <li>Attendance below recommended level</li>
+                                {% endif %}
+                                {% if academic.cgpa < 8.0 %}
+                                <li>CGPA could be improved</li>
+                                {% endif %}
+                                {% for subject in academic.semesters[-1].subjects %}
+                                    {% if subject.marks < 75 %}
+                                    <li>{{ subject.name }} performance needs attention</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="charts-section">
+                <div class="section-header">
+                    <h3 id="charts-title">Performance Analytics</h3>
+                </div>
+                <div class="charts-container">
+                    <div class="chart-image">
+                        <img src="data:image/png;base64,{{ graph }}" 
+                             alt="Performance Graph"
+                             style="max-width: 100%; height: auto; border-radius: 8px;">
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Hidden data for JavaScript -->
+    <script type="application/json" id="academic-data">
+        {{ academic | tojson | safe }}
+    </script>
+    <script type="application/json" id="analysis-data">
+        {{ analysis | tojson | safe }}
+    </script>
+
+    <script src="{{ url_for('static', filename='js/spark.js') }}"></script>
+</body>
+</html>
