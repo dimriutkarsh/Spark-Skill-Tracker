@@ -8,46 +8,49 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-content">
-            <div class="logo-section-left">
-                <div class="logo-white">
-                    <i class="fas fa-university"></i>
-                </div>
-                <div class="system-title-white">
-                    <h1>University Management System</h1>
-                    <p>Veer Madho Singh Bhandari Uttarakhand Technical University</p>
-                </div>
-            </div>
-        </div>
-    </header>
+<body>
+  <!-- Updated Header -->
+  <header class="new-header">
+    <div class="header-left">
+      <img
+        src="https://imgs.search.brave.com/7BX80CMlQXN7OKx9IL7GeftzG58B64SDmqVjZrOb-SM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzUwLzEvdmVlci1t/YWRoby1zaW5naC1i/aGFuZGFyaS11dHRh/cmFraGFuZC10ZWNo/bmljYWwtdW4tbG9n/by1wbmdfc2Vla2xv/Z28tNTAyOTU3LnBu/Zw"
+        alt="University Logo"
+        class="logo"
+      />
+      <div class="title-container">
+        <h1>University Management System</h1>
+        <p>Veer Madho Singh Bhandari Uttarakhand Technical University</p>
+      </div>
+    </div>
+    <img
+      src="{{ url_for('static', filename='images/updated.png') }}"
+      alt="Profile"
+      class="profile"
+    />
+  </header>
 
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-button active">
-                <i class="fas fa-tachometer-alt"></i>
-                <span>DASHBOARD</span>
-            </div>
-            <div class="nav-button">
-                <i class="fas fa-user-graduate"></i>
-                <span>STUDENT</span>
-            </div>
-            <div class="nav-button">
-                <i class="fas fa-book"></i>
-                <span>ACADEMICS</span>
-            </div>
-            <div class="nav-button">
-                <i class="fas fa-calendar-check"></i>
-                <span>ATTENDANCE</span>
-            </div>
-            <div class="nav-button">
-                <i class="fas fa-chart-bar"></i>
-                <span>REPORTS</span>
-            </div>
-        </div>
-    </nav>
+  <!-- Updated Navbar -->
+  <nav class="navbar new-navbar">
+    <div class="nav-container">
+      <div class="nav-button active">
+        <i class="fas fa-tachometer-alt"></i>
+        <span>DASHBOARD</span>
+      </div>
+      <div class="nav-button">
+        <i class="fas fa-book"></i>
+        <span>ACADEMICS</span>
+      </div>
+      <div class="nav-button">
+        <i class="fas fa-calendar-check"></i>
+        <span>ATTENDANCE</span>
+      </div>
+      <div class="nav-button">
+        <i class="fas fa-chart-bar"></i>
+        <span>REPORTS</span>
+      </div>
+    </div>
+  </nav>
+
 
     <!-- Main Content -->
     <main class="main-content">

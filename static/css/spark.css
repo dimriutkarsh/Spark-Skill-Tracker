@@ -13,19 +13,72 @@ body {
 }
 
 /* Header Styles */
-.header {
-    background: white;
-    color: #002b5c;
-    padding: 1rem 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    border-bottom: 1px solid #eee;
+.new-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: whitesmoke;
+  padding: 10px 20px;
+  color: black;
 }
 
-.header-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
+.header-left {
+  display: flex;
+  align-items: center;
 }
+
+.logo {
+  width: 60px;
+  height: auto;
+  border-radius: 10px;
+  margin-right: 15px;
+}
+
+.title-container h1 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.title-container p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: black;
+}
+
+.profile {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Navbar */
+.new-navbar {
+  background-color: whitesmoke;
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.new-navbar .nav-container {
+  display: flex;
+  gap: 30px;
+}
+
+.nav-button {
+  color: white;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: 0.3s;
+}
+
+.nav-button:hover,
+.nav-button.active {
+  color: #ffd700;
+}
+
 
 .logo-section-left {
     display: flex;
