@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Career Guidance - Chatbot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ai-agent.css') }}">
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <img src="https://imgs.search.brave.com/7BX80CMlQXN7OKx9IL7GeftzG58B64SDmqVjZrOb-SM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzUwLzEvdmVlci1t/YWRoby1zaW5naC1i/aGFuZGFyaS11dHRh/cmFraGFuZC10ZWNo/bmljYWwtdW4tbG9n/by1wbmdfc2Vla2xv/Z28tNTAyOTU3LnBu/Zw" alt="University Logo" class="logo" />
+            <div class="title-container">
+                <h1>AI Career Guidance System</h1>
+                <p>Personalized Career Development Dashboard</p>
+            </div>
+        </div>
+        <div class="student-info">
+            <span class="student-name">{{ student_data.name }}</span>
+            <span class="student-field">{{ student_data.field }}</span>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li class="active">
+                <a href="#" onclick="showTab('roadmap')">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M3 13h2v-2H3v2zm4 0h14v-2H7v2zM3 17h2v-2H3v2zm0-8h2V7H3v2zm4 0h14V7H7v2zM3 21h2v-2H3v2z"/>
+                    </svg>
+                    CAREER ROADMAP
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="showTab('reality')">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                    </svg>
+                    REALITY CHECK
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="showTab('chat')">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4v3c0 .6.4 1 1 1h.5c.2 0 .5-.1.6-.3L14.6 18H20c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+                    </svg>
+                    CHAT
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="showTab('tracker')">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H8v-4h4v4zm5-6h-4V7h4v4z"/>
+                    </svg>
+                    PROGRESS TRACKER
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <main>
+        <!-- Roadmap Tab -->
+        <div id="roadmap" class="tab-content active">
+            <h2>Your Personalized Career Roadmap</h2>
+            <div class="content-loading" id="roadmapLoading">
+                <div class="spinner"></div>
+                <p>Generating your personalized roadmap...</p>
+            </div>
+            <div class="roadmap-content" id="roadmapContent">
+                <!-- Roadmap will be loaded here -->
+            </div>
+            <button class="btn btn-primary" onclick="generateRoadmap()">Generate New Roadmap</button>
+        </div>
+
+        <!-- Reality Check Tab -->
+        <div id="reality" class="tab-content">
+            <h2>Reality Check & Honest Advice</h2>
+            <div class="content-loading" id="realityLoading">
+                <div class="spinner"></div>
+                <p>Analyzing your current situation...</p>
+            </div>
+            <div class="reality-content" id="realityContent">
+                <!-- Reality check will be loaded here -->
+            </div>
+            <button class="btn btn-secondary" onclick="generateRealityCheck()">Get Reality Check</button>
+        </div>
+
+        <!-- Chat Tab -->
+        <div id="chat" class="tab-content">
+            <h2>Ask Your Career Counselor</h2>
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot-message">
+                        <div class="message-content">
+                            Hi {{ student_data.name }}! I'm here to help with your career development. Ask me anything about your journey in {{ student_data.field }}!
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" id="chatInput" placeholder="Ask about your career, skills, or any guidance..." />
+                    <button onclick="sendMessage()" class="btn btn-primary">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Tracker Tab -->
+        <div id="tracker" class="tab-content">
+            <h2>Progress Tracker</h2>
+            <div class="tracker-grid">
+                <div class="tracker-card">
+                    <h3>Technical Skills</h3>
+                    <div class="progress-items" id="technicalSkills">
+                        <!-- Progress items will be added here -->
+                    </div>
+                    <button class="btn btn-small" onclick="addProgress('technical')">Add Skill</button>
+                </div>
+                
+                <div class="tracker-card">
+                    <h3>Projects Completed</h3>
+                    <div class="progress-items" id="projectsCompleted">
+                        <!-- Progress items will be added here -->
+                    </div>
+                    <button class="btn btn-small" onclick="addProgress('project')">Add Project</button>
+                </div>
+                
+                <div class="tracker-card">
+                    <h3>Courses & Certifications</h3>
+                    <div class="progress-items" id="coursesCompleted">
+                        <!-- Progress items will be added here -->
+                    </div>
+                    <button class="btn btn-small" onclick="addProgress('course')">Add Course</button>
+                </div>
+                
+                <div class="tracker-card">
+                    <h3>Networking & Experience</h3>
+                    <div class="progress-items" id="networkingActivities">
+                        <!-- Progress items will be added here -->
+                    </div>
+                    <button class="btn btn-small" onclick="addProgress('networking')">Add Activity</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            Copyright © 2024 AI Career Guidance System - Powered by OpenAI
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+</body>
+</html>

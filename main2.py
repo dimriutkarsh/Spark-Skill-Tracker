@@ -12,6 +12,8 @@ import base64
 from attendance_utils import *
 from resume_generator import ResumeGenerator
 from ai_processor import AIProcessor
+from openai_client import GeminiClient
+from career_advisor import CareerAdvisor
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Required for sessions
@@ -465,6 +467,135 @@ if __name__ == '__main__':
     os.makedirs('templates', exist_ok=True)
     os.makedirs('static/css', exist_ok=True)
     os.makedirs('static/js', exist_ok=True)
+
+
+# -------------------------
+# Personalized agent
+# -------------------------
+
+
+# Initialize Gemini client
+try:
+    gemini_client = GeminiClient()
+    career_advisor = CareerAdvisor(gemini_client)
+    print("Gemini client initialized successfully")
+except Exception as e:
+    print(f"Error initializing Gemini client: {e}")
+    gemini_client = None
+    career_advisor = None
+
+@app.route('/ai-agent')
+def index():
+    session.clear()
+    return render_template('ai-agent.html')
+
+@app.route('/chatbot')
+def chatbot():
+    if 'quiz_completed' not in session:
+        return redirect(url_for('index'))
+    return render_template('chatbot.html', student_data=session.get('student_data'))
+
+@app.route('/submit_answer', methods=['POST'])
+def submit_answer():
+    try:
+        if not career_advisor:
+            return jsonify({'success': False, 'error': 'AI service not available'})
+        
+        data = request.json
+        question_id = data.get('question_id')
+        answer = data.get('answer')
+
+        if 'answers' not in session:
+            session['answers'] = {}
+        session['answers'][question_id] = answer
+        session.modified = True
+
+        questions = ['name', 'semester', 'field', 'skills', 'goals']
+        current_index = questions.index(question_id)
+
+        if current_index < len(questions) - 1:
+            next_question_id = questions[current_index + 1]
+            return jsonify({'success': True, 'next_question': next_question_id, 'is_last': False})
+        else:
+            student_data = session['answers']
+            session['student_data'] = student_data
+            session['quiz_completed'] = True
+            session.modified = True
+            return jsonify({'success': True, 'quiz_complete': True, 'redirect_url': url_for('chatbot')})
+
+    except Exception as e:
+        print(f"Error in submit_answer: {e}")
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/get_roadmap', methods=['POST'])
+def get_roadmap():
+    try:
+        if not career_advisor:
+            return jsonify({'success': False, 'error': 'AI service not available'})
+        if 'student_data' not in session:
+            return jsonify({'success': False, 'error': 'No student data found'})
+
+        student_data = session['student_data']
+        print(f"Generating roadmap for: {student_data.get('name', 'Unknown')}")
+        roadmap = career_advisor.generate_roadmap(student_data)
+
+        return jsonify({'success': True, 'roadmap': roadmap})
+    except Exception as e:
+        print(f"Error in get_roadmap: {e}")
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/get_reality_check', methods=['POST'])
+def get_reality_check():
+    try:
+        if not career_advisor:
+            return jsonify({'success': False, 'error': 'AI service not available'})
+        if 'student_data' not in session:
+            return jsonify({'success': False, 'error': 'No student data found'})
+
+        student_data = session['student_data']
+        print(f"Generating reality check for: {student_data.get('name', 'Unknown')}")
+        reality_check = career_advisor.generate_reality_check(student_data)
+
+        return jsonify({'success': True, 'reality_check': reality_check})
+    except Exception as e:
+        print(f"Error in get_reality_check: {e}")
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/chat_message', methods=['POST'])
+def chat_message():
+    try:
+        if not career_advisor:
+            return jsonify({'success': False, 'error': 'AI service not available'})
+
+        data = request.json
+        message = data.get('message')
+        if 'student_data' not in session:
+            return jsonify({'success': False, 'error': 'No student data found'})
+
+        student_data = session['student_data']
+        print(f"Processing chat message: {message[:50]}...")
+        response = career_advisor.chat_with_student(message, student_data)
+
+        return jsonify({'success': True, 'response': response})
+    except Exception as e:
+        print(f"Error in chat_message: {e}")
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/update_progress', methods=['POST'])
+def update_progress():
+    try:
+        data = request.json
+        progress_data = data.get('progress')
+
+        if 'progress_tracking' not in session:
+            session['progress_tracking'] = {}
+        session['progress_tracking'].update(progress_data)
+        session.modified = True
+
+        return jsonify({'success': True})
+    except Exception as e:
+        print(f"Error in update_progress: {e}")
+        return jsonify({'success': False, 'error': str(e)})
 
 
 # -------------------------

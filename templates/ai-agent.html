@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Career Guidance - Quiz</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ai-agent.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/spark.css') }}">
+</head>
+<body>
+  <header class="new-header">
+    <div class="header-left">
+      <img
+        src="https://imgs.search.brave.com/7BX80CMlQXN7OKx9IL7GeftzG58B64SDmqVjZrOb-SM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzUwLzEvdmVlci1t/YWRoby1zaW5naC1i/aGFuZGFyaS11dHRh/cmFraGFuZC10ZWNo/bmljYWwtdW4tbG9n/by1wbmdfc2Vla2xv/Z28tNTAyOTU3LnBu/Zw"
+        alt="University Logo"
+        class="logo"
+      />
+      <div class="title-container">
+        <h1>University Management System</h1>
+        <p>Veer Madho Singh Bhandari Uttarakhand Technical University</p>
+      </div>
+    </div>
+    <img
+      src="{{ url_for('static', filename='images/updated.png') }}"
+      alt="Profile"
+      class="profile"
+    />
+  </header>
+
+    <nav>
+    <ul>
+        <div class="nav-container">
+            <div class="nav-button" onclick="location.href='/dashboard'">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </div>
+            <li class="active">
+                <a href="#">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+                    </svg>
+                    CAREER ASSESSMENT
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <h2>Career Guidance Assessment</h2>
+                <p>Let's understand your current situation to provide personalized career guidance</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <span class="progress-text" id="progressText">Question 1 of 5</span>
+            </div>
+
+            <div class="question-container" id="questionContainer">
+                <!-- Questions will be dynamically loaded here -->
+            </div>
+
+            <div class="quiz-actions">
+                <button id="nextBtn" class="btn btn-primary" onclick="submitAnswer()" disabled>
+                    Next Question
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            Copyright © 2024 AI Career Guidance System - Powered by OpenAI
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
+</body>
+</html>
