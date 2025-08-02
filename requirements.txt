@@ -5,7 +5,7 @@ itsdangerous==2.2.0
 click==8.1.7
 fpdf2==2.7.6
 seaborn
-
+requests
 matplotlib==3.9.2
 numpy==2.1.1
 
