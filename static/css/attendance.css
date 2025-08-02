@@ -1,0 +1,745 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', Arial, sans-serif;
+    background-color: #eaf3f3;
+    color: #000000;
+    line-height: 1.6;
+}
+
+/* Header Styles */
+.new-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: whitesmoke;
+  padding: 10px 20px;
+  color: black;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 60px;
+  height: auto;
+  border-radius: 10px;
+  margin-right: 15px;
+}
+
+.title-container h1 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.title-container p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: black;
+}
+
+.profile {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.logo-section-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: flex-start;
+}
+
+.logo-white {
+    background: #002b5c;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.system-title-white h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+    color: #002b5c;
+}
+
+.system-title-white p {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Navigation Styles */
+.navbar {
+    background-color: #002b5c;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-start;
+    padding: 0 2rem;
+    gap: 0;
+}
+
+.nav-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.nav-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-button.active {
+    background-color: #f2b100;
+    color: #002b5c;
+    font-weight: 600;
+}
+
+.nav-button i {
+    font-size: 1rem;
+}
+
+/* Main Content */
+.main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.container {
+    width: 100%;
+}
+
+/* Dashboard Header */
+.dashboard-header {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.dashboard-header h2 {
+    font-size: 2rem;
+    color: #002b5c;
+    font-weight: 700;
+}
+
+/* Semester Selector */
+.semester-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.semester-selector label {
+    color: #002b5c;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.semester-selector select {
+    padding: 0.5rem 1rem;
+    border: 2px solid #002b5c;
+    border-radius: 6px;
+    background: white;
+    color: #002b5c;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.semester-selector select:hover {
+    background-color: #f8f9fa;
+}
+
+.semester-selector select:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 43, 92, 0.1);
+}
+
+/* Student Information */
+.student-info {
+    margin-bottom: 2rem;
+}
+
+.info-card {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.welcome-text {
+    color: #007f00;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.info-label {
+    color: #007f00;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.info-value {
+    color: #000000;
+    font-size: 1rem;
+}
+
+/* Performance Overview */
+.performance-overview {
+    margin-bottom: 2rem;
+}
+
+.performance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.performance-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.performance-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.card-header i {
+    color: #002b5c;
+    font-size: 1.2rem;
+}
+
+.card-header h3 {
+    color: #002b5c;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.card-content {
+    text-align: center;
+}
+
+.metric-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #002b5c;
+    margin-bottom: 0.5rem;
+}
+
+.metric-remark {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.metric-subtitle {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Calculator Section */
+.calculator-section {
+    margin-bottom: 2rem;
+}
+
+.calculator-card {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.calculator-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.input-group label {
+    color: #002b5c;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.input-group input {
+    padding: 0.75rem;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #002b5c;
+    box-shadow: 0 0 0 3px rgba(0, 43, 92, 0.1);
+}
+
+.calculate-btn {
+    background-color: #002b5c;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: fit-content;
+    align-self: end;
+}
+
+.calculate-btn:hover {
+    background-color: #004080;
+    transform: translateY(-2px);
+}
+
+.calculator-results {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 6px;
+    border: 2px solid #e9ecef;
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.result-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    text-align: center;
+}
+
+.result-label {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.result-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #002b5c;
+}
+
+/* Section Headers */
+.section-header {
+    margin-bottom: 1.5rem;
+}
+
+.section-header h3 {
+    color: #002b5c;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+/* Semester Details */
+.semester-details {
+    margin-bottom: 2rem;
+}
+
+.subjects-table {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.subjects-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.subjects-table th {
+    background-color: #002b5c;
+    color: white;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+}
+
+.subjects-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.subjects-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Status Styles */
+.status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status.excellent {
+    background-color: #228B22;
+    color: white;
+}
+
+.status.good {
+    background-color: #32CD32;
+    color: white;
+}
+
+.status.average {
+    background-color: #FFD700;
+    color: #002b5c;
+}
+
+.status.poor {
+    background-color: #FF4500;
+    color: white;
+}
+
+/* Analysis Section */
+.analysis-section {
+    margin-bottom: 2rem;
+}
+
+.analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.analysis-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.analysis-card ul {
+    list-style: none;
+    padding: 0;
+}
+
+.analysis-card li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.analysis-card li:before {
+    content: "•";
+    color: #007f00;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.analysis-card li:last-child {
+    border-bottom: none;
+}
+
+.recommendations .card-header i {
+    color: #f2b100;
+}
+
+.strengths .card-header i {
+    color: #228B22;
+}
+
+.alerts .card-header i {
+    color: #FF4500;
+}
+
+/* History Section */
+.history-section {
+    margin-bottom: 2rem;
+}
+
+.history-card {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.history-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.history-table th {
+    background-color: #f8f9fa;
+    color: #002b5c;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.history-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.history-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.attendance-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.attendance-status.present {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.attendance-status.absent {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .semester-selector {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .nav-container {
+        flex-wrap: wrap;
+        gap: 0;
+    }
+    
+    .nav-button {
+        flex: 1;
+        min-width: 120px;
+        justify-content: center;
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .main-content {
+        padding: 1rem;
+    }
+    
+    .performance-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .analysis-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .calculator-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .results-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .subjects-table {
+        overflow-x: auto;
+    }
+    
+    .metric-value {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-left {
+        gap: 0.5rem;
+    }
+    
+    .logo {
+        width: 50px;
+    }
+    
+    .title-container h1 {
+        font-size: 1rem;
+    }
+    
+    .title-container p {
+        font-size: 0.8rem;
+    }
+    
+    .performance-card {
+        padding: 1rem;
+    }
+    
+    .metric-value {
+        font-size: 1.8rem;
+    }
+    
+    .nav-button span {
+        font-size: 0.8rem;
+    }
+    
+    .semester-selector {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .semester-selector select {
+        width: 100%;
+    }
+    
+    .results-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.slide-in {
+    animation: slideIn 0.6s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #002b5c;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #004080;
+}
+
+/* Loading States */
+.loading {
+    text-align: center;
+    color: #666;
+    padding: 2rem;
+}
+
+.loading i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #002b5c;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

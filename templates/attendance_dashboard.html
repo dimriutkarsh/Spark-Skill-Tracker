@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Dashboard - Student Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/attendance.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/spark.css') }}">
+</head>
+<body>
+  <!-- Updated Header -->
+  <header class="new-header">
+    <div class="header-left">
+      <img
+        src="https://imgs.search.brave.com/7BX80CMlQXN7OKx9IL7GeftzG58B64SDmqVjZrOb-SM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzUwLzEvdmVlci1t/YWRoby1zaW5naC1i/aGFuZGFyaS11dHRh/cmFraGFuZC10ZWNo/bmljYWwtdW4tbG9n/by1wbmdfc2Vla2xv/Z28tNTAyOTU3LnBu/Zw"
+        alt="University Logo"
+        class="logo"
+      />
+      <div class="title-container">
+        <h1>University Management System</h1>
+        <p>Veer Madho Singh Bhandari Uttarakhand Technical University</p>
+      </div>
+    </div>
+    <img
+      src="{{ url_for('static', filename='images/updated.png') }}"
+      alt="Profile"
+      class="profile"
+    />
+  </header>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-button" onclick="location.href='/dashboard'">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-button active">
+                <i class="fas fa-calendar-check"></i>
+                <span>Attendance</span>
+            </div>
+            <div class="nav-button" onclick="location.href='/about'">
+                <i class="fas fa-info-circle"></i>
+                <span>About</span>
+            </div>
+            <div class="nav-button" onclick="location.href='/contact'">
+                <i class="fas fa-envelope"></i>
+                <span>Contact</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header fade-in">
+                <h2>Attendance Dashboard</h2>
+                <div class="semester-selector">
+                    <label for="semester-select">Semester:</label>
+                    <select id="semester-select">
+                        <option value="{{ attendance.current_semester }}" selected>Semester {{ attendance.current_semester }}</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Student Information -->
+            <section class="student-info fade-in">
+                <div class="info-card">
+                    <div class="welcome-text">Welcome, {{ student.name }}!</div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Roll Number</span>
+                            <span class="info-value">{{ student.roll_number }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Course</span>
+                            <span class="info-value">{{ student.course }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Current Semester</span>
+                            <span class="info-value">{{ attendance.current_semester }}{% if attendance.current_semester == 1 %}st{% elif attendance.current_semester == 2 %}nd{% elif attendance.current_semester == 3 %}rd{% else %}th{% endif %} Semester</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Academic Year</span>
+                            <span class="info-value">{{ student.year_of_admission }}-{{ student.year_of_admission|int + 4 }}</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Overall Performance -->
+            <section class="performance-overview slide-in">
+                <div class="section-header">
+                    <h3>Overall Attendance Overview</h3>
+                </div>
+                <div class="performance-grid">
+                    <div class="performance-card">
+                        <div class="card-header">
+                            <i class="fas fa-percentage"></i>
+                            <h3>Overall Attendance</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="metric-value" style="color: {% if metrics.overall_percentage >= 75 %}#228B22{% else %}#FF4500{% endif %}">
+                                {{ metrics.overall_percentage }}%
+                            </div>
+                            <div class="metric-remark status {% if metrics.overall_percentage >= 90 %}excellent{% elif metrics.overall_percentage >= 80 %}good{% elif metrics.overall_percentage >= 75 %}average{% else %}poor{% endif %}">
+                                {% if metrics.overall_percentage >= 90 %}Excellent{% elif metrics.overall_percentage >= 80 %}Good{% elif metrics.overall_percentage >= 75 %}Satisfactory{% else %}Poor{% endif %}
+                            </div>
+                            <div class="metric-subtitle">{{ metrics.total_attended }}/{{ metrics.total_classes }} classes attended</div>
+                        </div>
+                    </div>
+
+                    <div class="performance-card">
+                        <div class="card-header">
+                            <i class="fas fa-target"></i>
+                            <h3>Target Status</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="metric-value" style="color: {% if metrics.overall_percentage >= 75 %}#228B22{% else %}#FF4500{% endif %}">
+                                {% if metrics.overall_percentage >= 75 %}✓{% else %}⚠️{% endif %}
+                            </div>
+                            <div class="metric-remark">
+                                {% if metrics.overall_percentage >= 75 %}
+                                    Target Achieved
+                                {% else %}
+                                    Below Target
+                                {% endif %}
+                            </div>
+                            <div class="metric-subtitle">75% minimum required</div>
+                        </div>
+                    </div>
+
+                    <div class="performance-card">
+                        <div class="card-header">
+                            <i class="fas fa-book"></i>
+                            <h3>Total Subjects</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="metric-value">{{ attendance.subjects|length }}</div>
+                            <div class="metric-remark">Active Courses</div>
+                            <div class="metric-subtitle">Current semester</div>
+                        </div>
+                    </div>
+
+                    <div class="performance-card">
+                        <div class="card-header">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h3>Critical Subjects</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="metric-value" style="color: #FF4500">
+                                {% set critical_count = [] %}
+                                {% for subject, details in subject_details.items() %}
+                                    {% if details.percentage < 75 %}
+                                        {% if critical_count.append(1) %}{% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                                {{ critical_count|length }}
+                            </div>
+                            <div class="metric-remark">Below 75%</div>
+                            <div class="metric-subtitle">Need attention</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Attendance Calculator -->
+            <section class="calculator-section slide-in">
+                <div class="section-header">
+                    <h3>Smart Attendance Calculator</h3>
+                    <p style="color: #666; margin-top: 0.5rem;">Based on Mon-Fri schedule with 8 classes per day (40 classes/week)</p>
+                </div>
+                <div class="calculator-card">
+                    <div class="calculator-grid">
+                        <div class="input-group">
+                            <label for="calc-total">Total Classes</label>
+                            <input type="number" id="calc-total" min="1" value="40" placeholder="Enter total classes">
+                        </div>
+                        <div class="input-group">
+                            <label for="calc-attended">Attended Classes</label>
+                            <input type="number" id="calc-attended" min="0" value="30" placeholder="Enter attended classes">
+                        </div>
+                        <div class="input-group">
+                            <label for="calc-target">Target Percentage (%)</label>
+                            <input type="number" id="calc-target" min="0" max="100" value="75" placeholder="Target %">
+                        </div>
+                        <div class="input-group">
+                            <button id="calculate-btn" class="calculate-btn">
+                                <i class="fas fa-calculator"></i>
+                                Calculate
+                            </button>
+                        </div>
+                    </div>
+                    <div id="calculator-results" class="calculator-results" style="display: none;">
+                        <div class="results-grid">
+                            <div class="result-item">
+                                <span class="result-label">Current Percentage</span>
+                                <span class="result-value" id="current-percentage">-</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">Classes Needed</span>
+                                <span class="result-value" id="classes-needed">-</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">Holidays Available</span>
+                                <span class="result-value" id="holidays-available">-</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">Status</span>
+                                <span class="result-value" id="attendance-status">-</span>
+                            </div>
+                        </div>
+                        <!-- Weekly breakdown will be added here by JavaScript -->
+                        <div id="weekly-breakdown" class="weekly-breakdown" style="display: none;">
+                            <h4>📅 Weekly Breakdown</h4>
+                            <div class="breakdown-grid">
+                                <div class="breakdown-item">
+                                    <span class="breakdown-label">Weeks to Target</span>
+                                    <span class="breakdown-value" id="weeks-needed">-</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span class="breakdown-label">Full Days Can Miss</span>
+                                    <span class="breakdown-value" id="days-can-miss">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Subject-wise Details -->
+            <section class="semester-details slide-in">
+                <div class="section-header">
+                    <h3>Subject-wise Attendance</h3>
+                </div>
+                <div class="subjects-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Instructor</th>
+                                <th>Total Classes</th>
+                                <th>Attended</th>
+                                <th>Percentage</th>
+                                <th>Status</th>
+                                <th>Classes Needed</th>
+                                <th>Holidays Available</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for subject_name, details in subject_details.items() %}
+                            <tr>
+                                <td><strong>{{ subject_name }}</strong></td>
+                                <td>{{ details.instructor }}</td>
+                                <td>{{ details.total_classes }}</td>
+                                <td>{{ details.attended_classes }}</td>
+                                <td>
+                                    <span style="color: {{ details.status.color }}; font-weight: bold;">
+                                        {{ details.percentage }}%
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="status {{ details.status.status }}">
+                                        {{ details.status.text }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if details.classes_needed > 0 %}
+                                        <span style="color: #FF4500; font-weight: bold;">{{ details.classes_needed }}</span>
+                                    {% else %}
+                                        <span style="color: #228B22;">✓ None</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if details.holidays_available > 0 %}
+                                        <span style="color: #228B22; font-weight: bold;">{{ details.holidays_available }}</span>
+                                    {% else %}
+                                        <span style="color: #FF4500;">0</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Recommendations -->
+            <section class="analysis-section slide-in">
+                <div class="section-header">
+                    <h3>Smart Recommendations & Insights</h3>
+                </div>
+                <div class="analysis-grid">
+                    <div class="analysis-card recommendations">
+                        <div class="card-header">
+                            <i class="fas fa-lightbulb"></i>
+                            <h3>Smart Recommendations</h3>
+                        </div>
+                        <ul>
+                            {% for recommendation in recommendations %}
+                            <li>{{ recommendation }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="analysis-card strengths">
+                        <div class="card-header">
+                            <i class="fas fa-trophy"></i>
+                            <h3>Key Insights</h3>
+                        </div>
+                        <ul>
+                            {% set excellent_subjects = [] %}
+                            {% set critical_subjects = [] %}
+                            {% for subject, details in subject_details.items() %}
+                                {% if details.percentage >= 90 %}
+                                    {% if excellent_subjects.append(subject) %}{% endif %}
+                                {% elif details.percentage < 75 %}
+                                    {% if critical_subjects.append(subject) %}{% endif %}
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if excellent_subjects %}
+                            <li>{{ excellent_subjects|length }} subject(s) with excellent attendance (≥90%)</li>
+                            {% endif %}
+                            
+                            {% if critical_subjects %}
+                            <li>{{ critical_subjects|length }} subject(s) need immediate attention (<75%)</li>
+                            {% endif %}
+                            
+                            <li>Overall attendance trend: 
+                                {% if metrics.overall_percentage >= 85 %}
+                                    Excellent - keep it up!
+                                {% elif metrics.overall_percentage >= 75 %}
+                                    Good - slight improvement needed
+                                {% else %}
+                                    Critical - immediate action required
+                                {% endif %}
+                            </li>
+                            
+                            <li>Weekly schedule: 8 classes/day × 5 days = 40 classes/week</li>
+                        </ul>
+                    </div>
+
+                    <div class="analysis-card alerts">
+                        <div class="card-header">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <h3>Action Items</h3>
+                        </div>
+                        <ul>
+                            {% set has_alerts = false %}
+                            {% for subject, details in subject_details.items() %}
+                                {% if details.percentage < 75 %}
+                                    {% set has_alerts = true %}
+                                    <li>{{ subject }}: Attend next {{ details.classes_needed }} classes without fail</li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if not has_alerts %}
+                            <li>Great job! All subjects meet the minimum requirement</li>
+                            <li>Consider maintaining this performance throughout the semester</li>
+                            {% endif %}
+                            
+                            <li>Monitor attendance weekly to avoid last-minute issues</li>
+                            <li>Use the calculator to plan your attendance strategy</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Attendance History -->
+            <section class="history-section slide-in">
+                <div class="section-header">
+                    <h3>Recent Attendance History</h3>
+                </div>
+                <div class="history-card">
+                    <div class="history-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Subject</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in attendance.attendance_history[:10] %}
+                                <tr>
+                                    <td>{{ record.date }}</td>
+                                    <td>{{ record.subject }}</td>
+                                    <td>
+                                        <span class="attendance-status {{ 'present' if record.status == 'Present' else 'absent' }}">
+                                            <i class="fas fa-{{ 'check' if record.status == 'Present' else 'times' }}"></i>
+                                            {{ record.status }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/attendance.js') }}"></script>
+</body>
+</html>

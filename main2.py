@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify, request, session, send_file, redirect, url_for
 import random, string
+import os
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 import pandas as pd
@@ -8,6 +9,9 @@ matplotlib.use('Agg')  # Non-interactive backend
 import matplotlib.pyplot as plt
 import seaborn as sns
 import base64
+from attendance_utils import *
+from resume_generator import ResumeGenerator
+from ai_processor import AIProcessor
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Required for sessions
@@ -63,6 +67,63 @@ def get_academic_data():
         ],
         'cgpa': 8.6,
         'overall_attendance': 90
+    }
+
+
+# -------------------------
+# Sample attendance data
+# -------------------------
+def get_attendance_data():
+    return {
+        'current_semester': 2,
+        'subjects': {
+            'Mathematics-II': {
+                'total_classes': 45,
+                'attended_classes': 38,
+                'percentage': 84.4,
+                'instructor': 'Dr. Sharma'
+            },
+            'Data Structures': {
+                'total_classes': 42,
+                'attended_classes': 30,
+                'percentage': 71.4,
+                'instructor': 'Prof. Kumar'
+            },
+            'Digital Logic': {
+                'total_classes': 40,
+                'attended_classes': 36,
+                'percentage': 90.0,
+                'instructor': 'Dr. Singh'
+            },
+            'Environmental Science': {
+                'total_classes': 35,
+                'attended_classes': 33,
+                'percentage': 94.3,
+                'instructor': 'Prof. Gupta'
+            },
+            'Workshop Practice': {
+                'total_classes': 30,
+                'attended_classes': 28,
+                'percentage': 93.3,
+                'instructor': 'Mr. Verma'
+            },
+            'Technical Writing': {
+                'total_classes': 25,
+                'attended_classes': 18,
+                'percentage': 72.0,
+                'instructor': 'Ms. Rani'
+            }
+        },
+        'attendance_history': [
+            {'date': '2024-01-15', 'subject': 'Mathematics-II', 'status': 'Present'},
+            {'date': '2024-01-15', 'subject': 'Data Structures', 'status': 'Absent'},
+            {'date': '2024-01-14', 'subject': 'Digital Logic', 'status': 'Present'},
+            {'date': '2024-01-14', 'subject': 'Environmental Science', 'status': 'Present'},
+            {'date': '2024-01-13', 'subject': 'Workshop Practice', 'status': 'Present'},
+            {'date': '2024-01-13', 'subject': 'Technical Writing', 'status': 'Absent'},
+            {'date': '2024-01-12', 'subject': 'Mathematics-II', 'status': 'Present'},
+            {'date': '2024-01-12', 'subject': 'Data Structures', 'status': 'Present'},
+        ]
     }
 
 
@@ -242,7 +303,174 @@ def spark_dashboard():
 
 
 # -------------------------
+# NEW ATTENDANCE ROUTES
+# -------------------------
+@app.route("/attendance")
+def attendance_dashboard():
+    student_data = get_student_data()
+    attendance_data = get_attendance_data()
+    
+    # Calculate metrics
+    metrics = calculate_attendance_metrics(attendance_data['subjects'])
+    
+    # Get recommendations
+    recommendations = get_subject_recommendations(attendance_data['subjects'])
+    
+    # Calculate detailed info for each subject
+    subject_details = {}
+    for subject_name, data in attendance_data['subjects'].items():
+        classes_needed = calculate_classes_needed(data['total_classes'], data['attended_classes'])
+        holidays_available = calculate_holidays_available(data['total_classes'], data['attended_classes'])
+        status = get_attendance_status(data['percentage'])
+        
+        subject_details[subject_name] = {
+            **data,
+            'classes_needed': classes_needed,
+            'holidays_available': holidays_available,
+            'status': status
+        }
+    
+    return render_template("attendance_dashboard.html",
+                           student=student_data,
+                           attendance=attendance_data,
+                           metrics=metrics,
+                           subject_details=subject_details,
+                           recommendations=recommendations)
+
+
+@app.route("/api/calculate_attendance", methods=['POST'])
+def api_calculate_attendance():
+    try:
+        data = request.json
+        total_classes = int(data.get('total_classes', 0))
+        attended_classes = int(data.get('attended_classes', 0))
+        target_percentage = float(data.get('target_percentage', 75))
+        
+        if total_classes <= 0:
+            return jsonify({'error': 'Total classes must be greater than zero'}), 400
+        
+        if attended_classes < 0:
+            return jsonify({'error': 'Attended classes cannot be negative'}), 400
+            
+        if attended_classes > total_classes:
+            return jsonify({'error': 'Attended classes cannot be more than total classes'}), 400
+        
+        current_percentage = (attended_classes / total_classes) * 100
+        classes_needed = calculate_classes_needed(total_classes, attended_classes, target_percentage)
+        holidays_available = calculate_holidays_available(total_classes, attended_classes, target_percentage)
+        status = get_attendance_status(current_percentage)
+        
+        # Calculate weekly projections
+        weekly_data = calculate_weekly_projections(total_classes, attended_classes, target_percentage)
+        
+        # Get detailed recommendations
+        detailed_recommendations = get_detailed_recommendations(current_percentage, classes_needed, holidays_available, target_percentage)
+        
+        return jsonify({
+            'current_percentage': round(current_percentage, 2),
+            'classes_needed': classes_needed,
+            'holidays_available': holidays_available,
+            'status': status,
+            'target_percentage': target_percentage,
+            'weekly_data': weekly_data,
+            'recommendations': detailed_recommendations
+        })
+        
+    except ValueError as e:
+        return jsonify({'error': 'Invalid input values. Please enter valid numbers.'}), 400
+    except Exception as e:
+        return jsonify({'error': 'An error occurred while calculating attendance.'}), 500
+
+
+@app.route("/api/update_attendance", methods=['POST'])
+def api_update_attendance():
+    data = request.json
+    subject = data.get('subject')
+    action = data.get('action')  # 'add_present' or 'add_absent'
+    
+    # In a real app, you would update the database here
+    # For now, just return success
+    return jsonify({'success': True, 'message': f'Attendance updated for {subject}'})
+
+# -------------------------
+# resume builder
+# -------------------------
+
+
+# Initialize AI components
+resume_gen = ResumeGenerator()
+ai_processor = AIProcessor()
+
+@app.route("/resume-builder")
+def generateresume():
+    return render_template("resume.html")
+
+@app.route('/api/generate-resume', methods=['POST'])
+def generate_resume():
+    try:
+        data = request.get_json()
+        
+        # Process data with AI
+        processed_data = ai_processor.enhance_resume_data(data)
+        
+        # Generate resume
+        resume_path = resume_gen.create_resume(processed_data)
+        
+        return jsonify({
+            'success': True,
+            'message': 'Resume generated successfully!',
+            'download_url': f'/download/{os.path.basename(resume_path)}'
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': f'Error generating resume: {str(e)}'
+        }), 500
+
+@app.route('/api/enhance-description', methods=['POST'])
+def enhance_description():
+    try:
+        data = request.get_json()
+        description = data.get('description', '')
+        job_type = data.get('type', 'experience')
+        
+        enhanced = ai_processor.enhance_description(description, job_type)
+        
+        return jsonify({
+            'success': True,
+            'enhanced_description': enhanced
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': f'Error enhancing description: {str(e)}'
+        }), 500
+
+@app.route('/download/<filename>')
+def download_file(filename):
+    try:
+        return send_file(
+            os.path.join('generated_resumes', filename),
+            as_attachment=True,
+            download_name=filename
+        )
+    except Exception as e:
+        return jsonify({'error': str(e)}), 404
+
+if __name__ == '__main__':
+    # Create directories if they don't exist
+    os.makedirs('generated_resumes', exist_ok=True)
+    os.makedirs('templates', exist_ok=True)
+    os.makedirs('static/css', exist_ok=True)
+    os.makedirs('static/js', exist_ok=True)
+
+
+# -------------------------
 # Run app
 # -------------------------
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
+
+

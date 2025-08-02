@@ -3,13 +3,10 @@ Jinja2==3.1.4
 Werkzeug==3.0.3
 itsdangerous==2.2.0
 click==8.1.7
+fpdf2==2.7.6
 
-# For graph generation (matplotlib, numpy)
 matplotlib==3.9.2
 numpy==2.1.1
 
-# Optional: if you use pandas for data handling
 pandas==2.2.2
-
-# If you use gunicorn for deployment
 gunicorn==23.0.0
