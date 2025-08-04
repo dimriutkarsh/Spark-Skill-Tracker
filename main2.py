@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request, session, send_file, redirect, url_for
+from flask import Flask, render_template, jsonify, request, session, send_file, redirect, url_for,send_from_directory
 import random, string
 import os
 from PIL import Image, ImageDraw, ImageFont
@@ -467,8 +467,6 @@ if __name__ == '__main__':
     os.makedirs('templates', exist_ok=True)
     os.makedirs('static/css', exist_ok=True)
     os.makedirs('static/js', exist_ok=True)
-
-
 # -------------------------
 # Personalized agent
 # -------------------------
@@ -598,10 +596,16 @@ def update_progress():
         return jsonify({'success': False, 'error': str(e)})
 
 
+# Skills/Project Route
+# -------------------------
+@app.route('/skills')
+def skills():
+    return render_template('index.html')
+
 # -------------------------
 # Run app
 # -------------------------
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True,port=5000)
 
 

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillForge - Student Portfolio Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Updated Header -->
+        <header class="new-header">
+            <div class="header-left">
+                <img
+                    src="https://imgs.search.brave.com/7BX80CMlQXN7OKx9IL7GeftzG58B64SDmqVjZrOb-SM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzUwLzEvdmVlci1t/YWRoby1zaW5naC1i/aGFuZGFyaS11dHRh/cmFraGFuZC10ZWNo/bmljYWwtdW4tbG9n/by1wbmdfc2Vla2xv/Z28tNTAyOTU3LnBu/Zw"
+                    alt="University Logo"
+                    class="logo"
+                />
+                <div class="title-container">
+                    <h1>University Management System</h1>
+                    <p>Veer Madho Singh Bhandari Uttarakhand Technical University</p>
+                </div>
+            </div>
+            <img
+                src="{{ url_for('static', filename='images/updated.png') }}"
+                alt="Profile"
+                class="profile"
+            />
+        </header>
+
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-left">
+                <button class="back-button" onclick="history.back()">
+                    <i data-lucide="arrow-left"></i> Back
+                </button>
+                <div class="nav-container">
+                    <div class="nav-button active" data-page="discover">
+                        <i data-lucide="search"></i>
+                        <span>Discover</span>
+                    </div>
+                    <div class="nav-button" data-page="challenges">
+                        <i data-lucide="target"></i>
+                        <span>Challenges</span>
+                    </div>
+                    <div class="nav-button" data-page="leaderboard">
+                        <i data-lucide="trophy"></i>
+                        <span>Leaderboard</span>
+                    </div>
+                    <div class="nav-button" data-page="profile">
+                        <i data-lucide="user"></i>
+                        <span>My Profile</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main id="main-content" class="main-content">
+            <!-- Content will be dynamically loaded here -->
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal-overlay" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modal-title">Modal Title</h3>
+                <button class="modal-close" id="modal-close">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Modal content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/data.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/components.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/pages.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
