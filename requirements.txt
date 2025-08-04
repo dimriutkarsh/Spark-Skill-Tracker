@@ -4,9 +4,10 @@ Werkzeug==3.0.3
 itsdangerous==2.2.0
 click==8.1.7
 fpdf2==2.7.6
-
+seaborn
 matplotlib==3.9.2
 numpy==2.1.1
-
+requests
 pandas==2.2.2
 gunicorn==23.0.0
+flask_moment

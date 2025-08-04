@@ -1,0 +1,393 @@
+{% extends "base.html" %}
+
+{% block title %}Academic Report - {{ student.name }}{% endblock %}
+
+{% block content %}
+<div class="report-container">
+    <!-- Header Section -->
+    <header class="report-header">
+        <div class="university-logo">
+<div class="logo-circle">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-QYcj31ALNMVqK1JMKa1Njgre44XMuPKbbw&s" alt="UTU Logo" class="utu-logo">
+</div>
+
+        </div>
+        <div class="university-info">
+            <h1>Veer Madho Singh Bhandari Uttarakhand Technical University, Dehradun, India</h1>
+            <p>(Formerly Uttarakhand Technical University Established by Act No. 415/2005 by Uttarakhand Government)</p>
+            <h2>University Management System</h2>
+            <p class="subtitle">Scholar at a Glance (Provisional)</p>
+            <p class="disclaimer">(Not to be used as Substitute of University official documents)</p>
+        </div>
+        <div class="control-buttons">
+            <button class="btn btn-back" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <button class="btn btn-print" onclick="window.print()">
+                <i class="fas fa-print"></i> Print
+            </button>
+        </div>
+    </header>
+
+    <!-- Student Details Section -->
+    <section class="student-details">
+        <h3>Student Details</h3>
+        <div class="details-content">
+            <div class="details-grid">
+                <div class="detail-row">
+                    <span class="label">Institute Code & Name</span>
+                    <span class="colon">:</span>
+                    <span class="value">{{ student.institute }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Course Code & Name</span>
+                    <span class="colon">:</span>
+                    <span class="value">{{ student.course }}</span>
+                    <span class="label">Branch Code & Name</span>
+                    <span class="colon">:</span>
+                    <span class="value">{{ student.branch }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">RollNo</span>
+                    <span class="colon">:</span>
+                    <span class="value">{{ student.roll_no }}</span>
+                    <span class="label">EnrollmentNo</span>
+                    <span class="colon">:</span>
+                    <span class="value">{{ student.enrollment_no }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Name</span>
+                    <span class="colon">:</span>
+                    <span class="value">{{ student.name }}</span>
+                    <span class="label">Hindi Name</span>
+                    <span class="colon">:</span>
+                    <span class="value">{{ student.hindi_name }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Father's Name</span>
+                    <span class="colon">:</span>
+                    <span class="value">{{ student.father_name }}</span>
+                    <span class="label">Gender</span>
+                    <span class="colon">:</span>
+                    <span class="value">{{ student.gender }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Admission Session</span>
+                    <span class="colon">:</span>
+                    <span class="value">{{ student.admission_session }}</span>
+                    <span class="label">Medium of Instruction</span>
+                    <span class="colon">:</span>
+                    <span class="value">{{ student.medium }}</span>
+                </div>
+            </div>
+            <div class="student-photo">
+                <img src="static/images/updated.png" alt="Student Photo">
+            </div>
+        </div>
+    </section>
+
+    <!-- Academic Performance Section -->
+    <section class="academic-performance">
+        <h3>Academic Performance</h3>
+        
+        <!-- Semester Selector -->
+        <div class="semester-selector">
+            <button class="semester-btn active" data-semester="semester_1">
+                <i class="fas fa-book"></i> Semester 1
+            </button>
+            <button class="semester-btn" data-semester="semester_2">
+                <i class="fas fa-book-open"></i> Semester 2
+            </button>
+        </div>
+
+        <!-- Semester 1 Content -->
+        <div class="semester-content active" id="semester_1_content">
+            <div class="performance-header">
+                <span><strong>Session:</strong> 2024-25 (Regular)</span>
+                <span><strong>Semester:</strong> 1</span>
+                <span><strong>Result:</strong> Pass</span>
+                <span><strong>Internal Assessment</strong></span>
+            </div>
+
+            <table class="marks-table">
+                <thead>
+                    <tr>
+                        <th rowspan="2">Subject Code</th>
+                        <th rowspan="2">Subject Name</th>
+                        <th rowspan="2">Credits</th>
+                        <th colspan="4">Internal Assessment (60 Marks)</th>
+                        <th rowspan="2">Grade</th>
+                        <th rowspan="2">Status</th>
+                    </tr>
+                    <tr>
+                        <th>Test 1 (30)</th>
+                        <th>Test 2 (30)</th>
+                        <th>Attend. (10)</th>
+                        <th>Practical (10)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for subject in subjects_data.semester_1.subjects %}
+                    {% set internal = calculate_internal_marks(subject.test1, subject.test2, subject.attendance, subject.practical) %}
+                    <tr>
+                        <td>{{ subject.code }}</td>
+                        <td>{{ subject.name }}</td>
+                        <td>{{ subject.credits }}</td>
+                        <td>{{ subject.test1 }}</td>
+                        <td>{{ subject.test2 }}</td>
+                        <td>{{ subject.attendance }}</td>
+                        <td>{{ subject.practical }}</td>
+                        <td class="grade-cell">{{ get_grade(internal.total_internal) }}</td>
+                        <td class="status-cell">
+                            {% if internal.total_internal >= 40 %}
+                                <span class="status-pass">Pass</span>
+                            {% else %}
+                                <span class="status-fail">Fail</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Faculty Feedback Section -->
+            <div class="faculty-feedback-section">
+                <h4><i class="fas fa-comments"></i> Faculty Feedback & Recommendations</h4>
+                {% for subject in subjects_data.semester_1.subjects %}
+                {% set fb = feedback_data.semester_1[subject.code] %}
+                <div class="feedback-card">
+                    <div class="feedback-header">
+                        <h5>{{ subject.name }} ({{ subject.code }})</h5>
+                        <span class="teacher-name">{{ fb.teacher }}</span>
+                        {% if fb.meeting_requested %}
+                            <span class="meeting-badge"><i class="fas fa-calendar-check"></i> Meeting Requested</span>
+                        {% endif %}
+                    </div>
+                    <div class="feedback-content">
+                        <div class="feedback-text">
+                            <strong>Feedback:</strong> {{ fb.feedback }}
+                        </div>
+                        <div class="recommendations">
+                            <strong>Recommendations:</strong> {{ fb.recommendations }}
+                        </div>
+                    </div>
+                    <div class="feedback-actions">
+                        <button class="btn btn-meeting" onclick="requestMeeting('semester_1', '{{ subject.code }}', '{{ fb.teacher }}')">
+                            <i class="fas fa-calendar-plus"></i> Request Meeting
+                        </button>
+                        <button class="btn btn-feedback" onclick="submitStudentFeedback('semester_1', '{{ subject.code }}')">
+                            <i class="fas fa-reply"></i> Respond
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Semester 2 Content -->
+        <div class="semester-content" id="semester_2_content">
+            <div class="performance-header">
+                <span><strong>Session:</strong> 2024-25 (Regular)</span>
+                <span><strong>Semester:</strong> 2</span>
+                <span><strong>Result:</strong> Pass</span>
+                <span><strong>Internal Assessment</strong></span>
+            </div>
+
+            <table class="marks-table">
+                <thead>
+                    <tr>
+                        <th rowspan="2">Subject Code</th>
+                        <th rowspan="2">Subject Name</th>
+                        <th rowspan="2">Credits</th>
+                        <th colspan="4">Internal Assessment (60 Marks)</th>
+                        <th rowspan="2">Grade</th>
+                        <th rowspan="2">Status</th>
+                    </tr>
+                    <tr>
+                        <th>Test 1 (30)</th>
+                        <th>Test 2 (30)</th>
+                        <th>Attend. (10)</th>
+                        <th>Practical (10)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for subject in subjects_data.semester_2.subjects %}
+                    {% set internal = calculate_internal_marks(subject.test1, subject.test2, subject.attendance, subject.practical) %}
+                    <tr>
+                        <td>{{ subject.code }}</td>
+                        <td>{{ subject.name }}</td>
+                        <td>{{ subject.credits }}</td>
+                        <td>{{ subject.test1 }}</td>
+                        <td>{{ subject.test2 }}</td>
+                        <td>{{ subject.attendance }}</td>
+                        <td>{{ subject.practical }}</td>
+                        <td class="grade-cell">{{ get_grade(internal.total_internal) }}</td>
+                        <td class="status-cell">
+                            {% if internal.total_internal >= 40 %}
+                                <span class="status-pass">Pass</span>
+                            {% else %}
+                                <span class="status-fail">Fail</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Faculty Feedback Section -->
+            <div class="faculty-feedback-section">
+                <h4><i class="fas fa-comments"></i> Faculty Feedback & Recommendations</h4>
+                {% for subject in subjects_data.semester_2.subjects %}
+                {% set fb = feedback_data.semester_2[subject.code] %}
+                <div class="feedback-card">
+                    <div class="feedback-header">
+                        <h5>{{ subject.name }} ({{ subject.code }})</h5>
+                        <span class="teacher-name">{{ fb.teacher }}</span>
+                        {% if fb.meeting_requested %}
+                            <span class="meeting-badge"><i class="fas fa-calendar-check"></i> Meeting Requested</span>
+                        {% endif %}
+                    </div>
+                    <div class="feedback-content">
+                        <div class="feedback-text">
+                            <strong>Feedback:</strong> {{ fb.feedback }}
+                        </div>
+                        <div class="recommendations">
+                            <strong>Recommendations:</strong> {{ fb.recommendations }}
+                        </div>
+                    </div>
+                    <div class="feedback-actions">
+                        <button class="btn btn-meeting" onclick="requestMeeting('semester_2', '{{ subject.code }}', '{{ fb.teacher }}')">
+                            <i class="fas fa-calendar-plus"></i> Request Meeting
+                        </button>
+                        <button class="btn btn-feedback" onclick="submitStudentFeedback('semester_2', '{{ subject.code }}')">
+                            <i class="fas fa-reply"></i> Respond
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Performance Analytics -->
+    <section class="performance-analytics">
+        <h3><i class="fas fa-chart-bar"></i> Performance Analytics</h3>
+        <div class="analytics-grid">
+            <div class="analytics-card">
+                <div class="analytics-header">
+                    <h4>Overall Progress</h4>
+                    <i class="fas fa-trending-up"></i>
+                </div>
+                <div class="analytics-content">
+                    <div class="progress-item">
+                        <span>Semester 1 Average</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 85%"></div>
+                        </div>
+                        <span class="progress-value">85%</span>
+                    </div>
+                    <div class="progress-item">
+                        <span>Semester 2 Average</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 82%"></div>
+                        </div>
+                        <span class="progress-value">82%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="analytics-card">
+                <div class="analytics-header">
+                    <h4>Attendance Status</h4>
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="analytics-content">
+                    <div class="attendance-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">92%</span>
+                            <span class="stat-label">Overall Attendance</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value status-good">Good</span>
+                            <span class="stat-label">Status</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Notes -->
+    <footer class="report-footer">
+        <div class="notes">
+            <h4>Note:</h4>
+            <p>1. The marks/other shown above are for display purpose. In case of dispute, Marks recorded in university secret record will be final.</p>
+            <p>2. AB - ABSENT, INC - INCOMPLETE, PWG - Pass with Grace, PCP - Pass Carry Paper, * - Back Paper, ESE - End Semester Exam, SESS - Sessional, CEC - Cumulative Earned Credits</p>
+        </div>
+        <div class="footer-info">
+            <p>Generated on: {{ moment().format('DD/MM/YYYY HH:mm:ss') }}</p>
+            <p>This is a computer-generated document. No signature is required.</p>
+        </div>
+    </footer>
+</div>
+
+<!-- Modal for Meeting Request -->
+<div id="meetingModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-calendar-plus"></i> Request Meeting</h3>
+            <span class="close" onclick="closeMeetingModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="meetingForm">
+                <div class="form-group">
+                    <label>Subject:</label>
+                    <input type="text" id="meetingSubject" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Faculty:</label>
+                    <input type="text" id="meetingFaculty" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Preferred Date & Time:</label>
+                    <input type="datetime-local" id="meetingDateTime" required>
+                </div>
+                <div class="form-group">
+                    <label>Purpose/Message:</label>
+                    <textarea id="meetingMessage" rows="4" placeholder="Please describe the purpose of the meeting..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-cancel" onclick="closeMeetingModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Send Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Student Feedback -->
+<div id="feedbackModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-reply"></i> Submit Feedback</h3>
+            <span class="close" onclick="closeFeedbackModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="feedbackForm">
+                <div class="form-group">
+                    <label>Subject:</label>
+                    <input type="text" id="feedbackSubject" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Your Response/Feedback:</label>
+                    <textarea id="studentFeedback" rows="5" placeholder="Share your thoughts, questions, or concerns..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-cancel" onclick="closeFeedbackModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

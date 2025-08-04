@@ -1,6 +1,8 @@
 from flask import Flask, render_template, jsonify, request, session, send_file, redirect, url_for,send_from_directory
 import random, string
 import os
+from flask_moment import Moment
+import datetime
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 import pandas as pd
@@ -601,6 +603,169 @@ def update_progress():
 @app.route('/skills')
 def skills():
     return render_template('index.html')
+
+# internal feedback
+# -------------------------
+
+moment = Moment(app)
+
+# Sample data for student Ankit
+student_data = {
+    'name': 'ANKIT SHARMA',
+    'hindi_name': 'अंकित शर्मा',
+    'roll_no': '2409701001',
+    'enrollment_no': 'UTU/2401100001',
+    'father_name': 'RAJESH SHARMA',
+    'gender': 'Male',
+    'admission_session': '2024-25',
+    'medium': 'English',
+    'course': '(01) B.TECH.',
+    'branch': '(70) Computer Science & Engineering (Artificial Intelligence and Machine learning)',
+    'institute': '(097) THDC INSTITUTE OF HYDROPOWER ENGINEERING AND TECHNOLOGY (A CAMPUS INSTITUTION OF UNIVERSITY), TEHRI, UK',
+    'photo': '/static/images/updated.png'
+}
+
+# Subjects data
+subjects_data = {
+    'semester_1': {
+        'subjects': [
+            {'code': 'CHE001', 'name': 'Engineering Chemistry', 'credits': 4, 'test1': 25, 'test2': 22, 'attendance': 9, 'practical': 8},
+            {'code': 'MEC001', 'name': 'Basic Mechanical Engineering', 'credits': 4, 'test1': 28, 'test2': 26, 'attendance': 10, 'practical': 9},
+            {'code': 'ELE001', 'name': 'Basic Electronics Engineering', 'credits': 4, 'test1': 24, 'test2': 27, 'attendance': 8, 'practical': 9},
+            {'code': 'MAT001', 'name': 'Engineering Mathematics-I', 'credits': 4, 'test1': 29, 'test2': 28, 'attendance': 10, 'practical': 10},
+            {'code': 'ENG001', 'name': 'English Language Lab', 'credits': 2, 'test1': 27, 'test2': 25, 'attendance': 9, 'practical': 8}
+        ]
+    },
+    'semester_2': {
+        'subjects': [
+            {'code': 'PHY001', 'name': 'Engineering Physics', 'credits': 4, 'test1': 26, 'test2': 24, 'attendance': 9, 'practical': 8},
+            {'code': 'PPS001', 'name': 'Programming for Problem Solving', 'credits': 4, 'test1': 28, 'test2': 29, 'attendance': 10, 'practical': 10},
+            {'code': 'ELE002', 'name': 'Basic Electrical Engineering', 'credits': 4, 'test1': 25, 'test2': 23, 'attendance': 8, 'practical': 7},
+            {'code': 'MAT002', 'name': 'Engineering Mathematics-II', 'credits': 4, 'test1': 27, 'test2': 26, 'attendance': 9, 'practical': 9},
+            {'code': 'EVS001', 'name': 'Environmental Science', 'credits': 2, 'test1': 29, 'test2': 28, 'attendance': 10, 'practical': 9}
+        ]
+    }
+}
+
+# Faculty feedback data
+feedback_data = {
+    'semester_1': {
+        'CHE001': {
+            'teacher': 'Dr. Priya Sharma',
+            'feedback': 'Good understanding of chemical concepts. Needs improvement in practical applications.',
+            'recommendations': 'Practice more numerical problems and attend additional tutorials.',
+            'meeting_requested': False
+        },
+        'MEC001': {
+            'teacher': 'Prof. Rajesh Kumar',
+            'feedback': 'Excellent performance in mechanical engineering fundamentals. Shows great potential.',
+            'recommendations': 'Continue with current approach. Consider advanced projects.',
+            'meeting_requested': False
+        },
+        'ELE001': {
+            'teacher': 'Dr. Sunita Verma',
+            'feedback': 'Good grasp of electronics basics. Circuit analysis skills are developing well.',
+            'recommendations': 'Focus more on practical circuit building and troubleshooting.',
+            'meeting_requested': True
+        },
+        'MAT001': {
+            'teacher': 'Prof. Amit Singh',
+            'feedback': 'Outstanding mathematical skills. Consistently performs well in all assessments.',
+            'recommendations': 'Maintain excellence. Help peers with mathematics concepts.',
+            'meeting_requested': False
+        },
+        'ENG001': {
+            'teacher': 'Ms. Neha Gupta',
+            'feedback': 'Good communication skills. Pronunciation and grammar need minor improvements.',
+            'recommendations': 'Practice speaking more and read technical literature.',
+            'meeting_requested': False
+        }
+    },
+    'semester_2': {
+        'PHY001': {
+            'teacher': 'Dr. Vikash Pandey',
+            'feedback': 'Solid understanding of physics principles. Lab work is satisfactory.',
+            'recommendations': 'Strengthen conceptual understanding through more problem solving.',
+            'meeting_requested': False
+        },
+        'PPS001': {
+            'teacher': 'Prof. Anita Rawat',
+            'feedback': 'Exceptional programming aptitude. Code quality and logic are impressive.',
+            'recommendations': 'Explore advanced programming concepts and contribute to open source.',
+            'meeting_requested': False
+        },
+        'ELE002': {
+            'teacher': 'Dr. Manoj Joshi',
+            'feedback': 'Needs improvement in electrical engineering concepts. Attendance affects performance.',
+            'recommendations': 'Regular attendance required. Schedule remedial classes.',
+            'meeting_requested': True
+        },
+        'MAT002': {
+            'teacher': 'Prof. Amit Singh',
+            'feedback': 'Continues to excel in mathematics. Advanced problem-solving skills evident.',
+            'recommendations': 'Consider mathematics olympiad or competitive examinations.',
+            'meeting_requested': False
+        },
+        'EVS001': {
+            'teacher': 'Dr. Kavita Bhatt',
+            'feedback': 'Excellent awareness of environmental issues. Projects are well-researched.',
+            'recommendations': 'Lead environmental initiatives in college. Consider research projects.',
+            'meeting_requested': False
+        }
+    }
+}
+
+def calculate_internal_marks(test1, test2, attendance, practical):
+    """Calculate internal marks based on college system"""
+    average_test = (test1 + test2) / 2
+    total_internal = average_test + attendance + practical
+    return {
+        'test_average': round(average_test, 1),
+        'total_internal': round(total_internal, 1)
+    }
+
+def get_grade(marks):
+    """Calculate grade based on marks"""
+    if marks >= 90: return 'A+'
+    elif marks >= 80: return 'A'
+    elif marks >= 70: return 'B+'
+    elif marks >= 60: return 'B'
+    elif marks >= 50: return 'C+'
+    elif marks >= 40: return 'C'
+    else: return 'F'
+
+@app.route('/feedback')
+def feedback():
+    return render_template('feedback.html', 
+                         student=student_data, 
+                         subjects_data=subjects_data,
+                         feedback_data=feedback_data,
+                         calculate_internal_marks=calculate_internal_marks,
+                         get_grade=get_grade)
+
+@app.route('/request_meeting', methods=['POST'])
+def request_meeting():
+    data = request.json
+    semester = data.get('semester')
+    subject_code = data.get('subject_code')
+    message = data.get('message', '')
+    
+    # In a real application, this would be saved to database
+    print(f"Meeting requested for {subject_code} in {semester}: {message}")
+    
+    return jsonify({'status': 'success', 'message': 'Meeting request sent successfully!'})
+
+@app.route('/submit_feedback', methods=['POST'])
+def submit_feedback():
+    data = request.json
+    semester = data.get('semester')
+    subject_code = data.get('subject_code')
+    feedback = data.get('feedback', '')
+    
+    # In a real application, this would be saved to database
+    print(f"Student feedback for {subject_code} in {semester}: {feedback}")
+    
+    return jsonify({'status': 'success', 'message': 'Feedback submitted successfully!'})
 
 # -------------------------
 # Run app
