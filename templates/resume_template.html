@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Professional Resume - {{ data.full_name }}</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #eaf3f3;
+      color: #000;
+      font-size: 14px;
+      line-height: 1.4;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header Styles */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff;
+      padding: 8px 16px;
+      border-bottom: 1px solid #ddd;
+      min-height: 72px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .logo {
+      width: 72px;
+      height: 72px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .title-container {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .title-container h1 {
+      font-weight: 700;
+      font-size: 18px;
+      color: #003366;
+      margin-bottom: 2px;
+    }
+
+    .title-container p {
+      font-weight: 600;
+      font-size: 13px;
+      color: #a67c00;
+    }
+
+    /* Navigation Styles */
+    nav {
+      background: linear-gradient(135deg, #003366, #004a99);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 48px;
+      font-size: 13px;
+      user-select: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 0 16px;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-left a {
+      color: #d4a017;
+      text-decoration: none;
+      font-weight: 700;
+      padding: 12px 20px;
+      background-color: rgba(212, 160, 23, 0.1);
+      border-radius: 4px;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .nav-btn {
+      background: #d4a017;
+      color: #003366;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .nav-btn:hover {
+      background: #b8941a;
+      transform: translateY(-1px);
+    }
+
+    .back-btn {
+      background: rgba(255,255,255,0.2);
+      color: white;
+    }
+
+    .back-btn:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    /* Resume Styles */
+    main {
+      padding: 20px;
+      flex: 1;
+    }
+
+    .resume-container {
+      max-width: 210mm;
+      margin: 0 auto;
+      background: white;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .resume-content {
+      padding: 30px;
+    }
+
+    /* Resume Header */
+    .resume-header {
+      text-align: center;
+      margin-bottom: 25px;
+      border-bottom: 2px solid #003366;
+      padding-bottom: 20px;
+    }
+
+    .resume-header h1 {
+      font-size: 28px;
+      color: #003366;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .contact-info {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Resume Sections */
+    .resume-section {
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      color: #003366;
+      font-weight: 700;
+      text-transform: uppercase;
+      border-bottom: 1px solid #d4a017;
+      padding-bottom: 5px;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .section-content {
+      line-height: 1.6;
+    }
+
+    .section-content p {
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .section-content ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .section-content li {
+      margin-bottom: 8px;
+      color: #333;
+      position: relative;
+      padding-left: 15px;
+    }
+
+    .section-content li:before {
+      content: "▪";
+      color: #003366;
+      position: absolute;
+      left: 0;
+    }
+
+    .education-item, .experience-item, .project-item {
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .education-item:last-child, .experience-item:last-child, .project-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .item-header {
+      font-weight: 600;
+      color: #003366;
+      margin-bottom: 5px;
+    }
+
+    .skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .skill-tag {
+      background: #f0f8ff;
+      color: #003366;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      border: 1px solid #d4a017;
+    }
+
+    .suggestions-box {
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      border-radius: 6px;
+      padding: 15px;
+      margin: 20px 0;
+    }
+
+    .suggestions-box h3 {
+      color: #856404;
+      margin-bottom: 10px;
+    }
+
+    .suggestions-box ul {
+      list-style-type: disc;
+      margin-left: 20px;
+    }
+
+    .suggestions-box li {
+      color: #856404;
+      margin-bottom: 5px;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: white !important;
+        font-size: 11pt;
+        line-height: 1.4;
+      }
+
+      header, nav {
+        display: none !important;
+      }
+
+      main {
+        padding: 0 !important;
+      }
+
+      .resume-container {
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        max-width: none !important;
+      }
+
+      .resume-content {
+        padding: 20px !important;
+      }
+
+      .suggestions-box {
+        display: none !important;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .contact-info {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .resume-content {
+        padding: 20px;
+      }
+
+      .resume-header h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <img
+        src="https://imgs.search.brave.com/7BX80CMlQXN7OKx9IL7GeftzG58B64SDmqVjZrOb-SM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzUwLzEvdmVlci1t/YWRoby1zaW5naC1i/aGFuZGFyaS11dHRh/cmFraGFuZC10ZWNo/bmljYWwtdW4tbG9n/by1wbmdfc2Vla2xv/Z28tNTAyOTU3LnBu/Zw"
+        alt="University Logo"
+        class="logo"
+      />
+      <div class="title-container">
+        <h1>Professional Resume Generator</h1>
+        <p>Your ATS-Optimized Resume is Ready</p>
+      </div>
+    </div>
+  </header>
+
+  <nav>
+    <div class="nav-left">
+      <a href="#">GENERATED RESUME</a>
+    </div>
+    <div class="nav-actions">
+      <a href="{{ url_for('index') }}" class="nav-btn back-btn">← Back to Form</a>
+      <button class="nav-btn" onclick="printResume()">🖨️ Print Resume</button>
+    </div>
+  </nav>
+
+  <main>
+    {% if data.suggestions %}
+    <div class="suggestions-box">
+      <h3>💡 Tips to Improve Your Resume</h3>
+      <ul>
+        {% for suggestion in data.suggestions %}
+        <li>{{ suggestion }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <div class="resume-container" id="resumeContent">
+      <div class="resume-content">
+        <!-- Resume Header -->
+        <div class="resume-header">
+          <h1>{{ data.full_name or "Your Name" }}</h1>
+          <div class="contact-info">
+            {% if data.email %}
+            <div class="contact-item">
+              <span>📧</span>
+              <span>{{ data.email }}</span>
+            </div>
+            {% endif %}
+            {% if data.phone %}
+            <div class="contact-item">
+              <span>📱</span>
+              <span>{{ data.phone }}</span>
+            </div>
+            {% endif %}
+            {% if data.address %}
+            <div class="contact-item">
+              <span>📍</span>
+              <span>{{ data.address }}</span>
+            </div>
+            {% endif %}
+            {% if data.linkedin %}
+            <div class="contact-item">
+              <span>💼</span>
+              <a href="{{ data.linkedin }}" style="color: inherit;">LinkedIn</a>
+            </div>
+            {% endif %}
+            {% if data.github %}
+            <div class="contact-item">
+              <span>💻</span>
+              <a href="{{ data.github }}" style="color: inherit;">GitHub</a>
+            </div>
+            {% endif %}
+            {% if data.website %}
+            <div class="contact-item">
+              <span>🌐</span>
+              <a href="{{ data.website }}" style="color: inherit;">Website</a>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Professional Summary -->
+        {% if data.objective %}
+        <div class="resume-section">
+          <h2 class="section-title">Professional Summary</h2>
+          <div class="section-content">
+            <p>{{ data.objective }}</p>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Technical Skills -->
+        {% if data.skills %}
+        <div class="resume-section">
+          <h2 class="section-title">Technical Skills</h2>
+          <div class="section-content">
+            <div class="skills-grid">
+              {% for skill in data.skills %}
+              <span class="skill-tag">{{ skill }}</span>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Work Experience -->
+        {% if data.experience %}
+        <div class="resume-section">
+          <h2 class="section-title">Professional Experience</h2>
+          <div class="section-content">
+            {% for exp in data.experience %}
+            <div class="experience-item">
+              {{ exp|replace('\n', '<br>')|safe }}
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Education -->
+        {% if data.education %}
+        <div class="resume-section">
+          <h2 class="section-title">Education</h2>
+          <div class="section-content">
+            {% for edu in data.education %}
+            <div class="education-item">
+              <div class="item-header">{{ edu }}</div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Projects -->
+        {% if data.projects %}
+        <div class="resume-section">
+          <h2 class="section-title">Key Projects</h2>
+          <div class="section-content">
+            {% for project in data.projects %}
+            <div class="project-item">
+              {{ project|replace('\n', '<br>')|safe }}
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Certifications -->
+        {% if data.certifications %}
+        <div class="resume-section">
+          <h2 class="section-title">Certifications</h2>
+          <div class="section-content">
+            <ul>
+              {% for cert in data.certifications %}
+              <li>{{ cert }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Achievements -->
+        {% if data.achievements %}
+        <div class="resume-section">
+          <h2 class="section-title">Achievements & Awards</h2>
+          <div class="section-content">
+            <ul>
+              {% for achievement in data.achievements %}
+              <li>{{ achievement }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Languages -->
+        {% if data.languages %}
+        <div class="resume-section">
+          <h2 class="section-title">Languages</h2>
+          <div class="section-content">
+            <div class="skills-grid">
+              {% for language in data.languages %}
+              <span class="skill-tag">{{ language }}</span>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function printResume() {
+      window.print();
+    }
+  </script>
+</body>
+</html>

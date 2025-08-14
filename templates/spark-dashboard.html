@@ -8,50 +8,40 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-<body>
-  <!-- Updated Header -->
-  <header class="new-header">
-    <div class="header-left">
-      <img
-        src="https://imgs.search.brave.com/7BX80CMlQXN7OKx9IL7GeftzG58B64SDmqVjZrOb-SM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzUwLzEvdmVlci1t/YWRoby1zaW5naC1i/aGFuZGFyaS11dHRh/cmFraGFuZC10ZWNo/bmljYWwtdW4tbG9n/by1wbmdfc2Vla2xv/Z28tNTAyOTU3LnBu/Zw"
-        alt="University Logo"
-        class="logo"
-      />
-      <div class="title-container">
-        <h1>University Management System</h1>
-        <p>Veer Madho Singh Bhandari Uttarakhand Technical University</p>
-      </div>
-    </div>
-    <img
-      src="{{ url_for('static', filename='images/updated.png') }}"
-      alt="Profile"
-      class="profile"
-    />
-  </header>
+    <!-- Updated Header -->
+    <header class="new-header">
+        <div class="header-left">
+            <img src="https://imgs.search.brave.com/7BX80CMlQXN7OKx9IL7GeftzG58B64SDmqVjZrOb-SM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzUwLzEvdmVlci1t/YWRoby1zaW5naC1i/aGFuZGFyaS11dHRh/cmFraGFuZC10ZWNo/bmljYWwtdW4tbG9n/by1wbmdfc2Vla2xv/Z28tNTAyOTU3LnBu/Zw" alt="University Logo" class="logo" />
+            <div class="title-container">
+                <h1>University Management System</h1>
+                <p>Veer Madho Singh Bhandari Uttarakhand Technical University</p>
+            </div>
+        </div>
+        <img src="{{ url_for('static', filename='images/updated.png') }}" alt="Profile" class="profile" />
+    </header>
 
-  <!-- Updated Navbar -->
-  <nav class="navbar new-navbar">
-    <div class="nav-container">
-      <div class="nav-button active">
-        <i class="fas fa-tachometer-alt"></i>
-        <span>DASHBOARD</span>
-      </div>
-      <div class="nav-button">
-        <i class="fas fa-book"></i>
-        <span>ACADEMICS</span>
-      </div>
-<a href="{{ url_for('attendance_dashboard') }}" class="nav-button">
-  <i class="fas fa-calendar-check"></i>
-  <span>ATTENDANCE</span>
-</a>
+    <!-- Updated Navbar -->
+    <nav class="navbar new-navbar">
+        <div class="nav-container">
+            <div class="nav-button active">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>DASHBOARD</span>
+            </div>
+            <div class="nav-button dropdown">
+                <i class="fas fa-book"></i>
+                <span>Study Material</span>
+                <div class="dropdown-content">
+                    <a href="https://dimriutkarsh.github.io/NotesNest/">Short Notes</a>
+                    <a href="https://dimriutkarsh.github.io/EduHub/">Previous Year Paper</a>
+                </div>
+            </div>
 
-      <div class="nav-button">
-        <i class="fas fa-chart-bar"></i>
-        <span>REPORTS</span>
-      </div>
-    </div>
-  </nav>
-
+            <a href="{{ url_for('attendance_dashboard') }}" class="nav-button">
+                <i class="fas fa-calendar-check"></i>
+                <span>ATTENDANCE</span>
+            </a>
+        </div>
+    </nav>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -288,4 +278,44 @@
 
     <script src="{{ url_for('static', filename='js/spark.js') }}"></script>
 </body>
+<script>
+    // Study Material dropdown functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdown = document.querySelector('.dropdown');
+    const dropdownContent = document.querySelector('.dropdown-content');
+    
+    if (dropdown) {
+        dropdown.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Toggle the active class
+            dropdown.classList.toggle('active');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+        
+        // Prevent dropdown from closing when clicking on dropdown content
+        if (dropdownContent) {
+            dropdownContent.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
+    }
+});
+
+// Semester view change functionality (if needed)
+function changeSemesterView() {
+    const select = document.getElementById('semester-select');
+    const selectedValue = select.value;
+    
+    // Add your semester view change logic here
+    console.log('Semester view changed to:', selectedValue);
+}
+</script>
 </html>

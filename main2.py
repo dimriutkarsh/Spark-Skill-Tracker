@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import base64
 from attendance_utils import *
-from resume_generator import ResumeGenerator
+from resume_data import ResumeProcessor
 from ai_processor import AIProcessor
 from openai_client import GeminiClient
 from career_advisor import CareerAdvisor
@@ -402,73 +402,61 @@ def api_update_attendance():
 
 
 # Initialize AI components
-resume_gen = ResumeGenerator()
-ai_processor = AIProcessor()
+resume_processor = ResumeProcessor()
 
-@app.route("/resume-builder")
-def generateresume():
-    return render_template("resume.html")
+@app.route('/resume')
+def resume_main():
+    return render_template('questions.html')
 
-@app.route('/api/generate-resume', methods=['POST'])
+@app.route('/generate-resume', methods=['POST'])
 def generate_resume():
-    try:
-        data = request.get_json()
-        
-        # Process data with AI
-        processed_data = ai_processor.enhance_resume_data(data)
-        
-        # Generate resume
-        resume_path = resume_gen.create_resume(processed_data)
-        
-        return jsonify({
-            'success': True,
-            'message': 'Resume generated successfully!',
-            'download_url': f'/download/{os.path.basename(resume_path)}'
-        })
+    # Get form data
+    form_data = {
+        'full_name': request.form.get('full_name'),
+        'email': request.form.get('email'),
+        'phone': request.form.get('phone'),
+        'address': request.form.get('address'),
+        'linkedin': request.form.get('linkedin'),
+        'github': request.form.get('github'),
+        'website': request.form.get('website'),
+        'objective': request.form.get('objective'),
+        'education': request.form.getlist('education[]'),
+        'experience': request.form.getlist('experience[]'),
+        'skills': request.form.get('skills'),
+        'projects': request.form.getlist('projects[]'),
+        'certifications': request.form.get('certifications'),
+        'achievements': request.form.get('achievements'),
+        'languages': request.form.get('languages')
+    }
     
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'message': f'Error generating resume: {str(e)}'
-        }), 500
-
-@app.route('/api/enhance-description', methods=['POST'])
-def enhance_description():
-    try:
-        data = request.get_json()
-        description = data.get('description', '')
-        job_type = data.get('type', 'experience')
-        
-        enhanced = ai_processor.enhance_description(description, job_type)
-        
-        return jsonify({
-            'success': True,
-            'enhanced_description': enhanced
-        })
+    # Process and enhance the resume data
+    processed_data = resume_processor.process_resume_data(form_data)
     
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'message': f'Error enhancing description: {str(e)}'
-        }), 500
+    # Store in session for potential back navigation
+    session['resume_data'] = processed_data
+    
+    return render_template('resume_template.html', data=processed_data)
 
-@app.route('/download/<filename>')
-def download_file(filename):
-    try:
-        return send_file(
-            os.path.join('generated_resumes', filename),
-            as_attachment=True,
-            download_name=filename
-        )
-    except Exception as e:
-        return jsonify({'error': str(e)}), 404
+@app.route('/resume')
+def resume():
+    if 'resume_data' in session:
+        return render_template('resume_template.html', data=session['resume_data'])
+    return redirect(url_for('index'))
 
-if __name__ == '__main__':
-    # Create directories if they don't exist
-    os.makedirs('generated_resumes', exist_ok=True)
-    os.makedirs('templates', exist_ok=True)
-    os.makedirs('static/css', exist_ok=True)
-    os.makedirs('static/js', exist_ok=True)
+@app.route('/back-to-form')
+def back_to_form():
+    return redirect(url_for('index'))
+
+@app.route('/save-progress', methods=['POST'])
+def save_progress():
+    """Save form progress to session"""
+    session['form_progress'] = request.json
+    return jsonify({'success': True})
+
+@app.route('/load-progress')
+def load_progress():
+    """Load saved form progress"""
+    return jsonify(session.get('form_progress', {}))
 # -------------------------
 # Personalized agent
 # -------------------------
@@ -611,11 +599,11 @@ moment = Moment(app)
 
 # Sample data for student Ankit
 student_data = {
-    'name': 'ANKIT SHARMA',
-    'hindi_name': 'अंकित शर्मा',
+    'name': 'Utkarsh Dimri',
+    'hindi_name': '',
     'roll_no': '2409701001',
     'enrollment_no': 'UTU/2401100001',
-    'father_name': 'RAJESH SHARMA',
+    'father_name': '',
     'gender': 'Male',
     'admission_session': '2024-25',
     'medium': 'English',
@@ -766,6 +754,16 @@ def submit_feedback():
     print(f"Student feedback for {subject_code} in {semester}: {feedback}")
     
     return jsonify({'status': 'success', 'message': 'Feedback submitted successfully!'})
+
+
+@app.route('/notes')
+def resources():
+    return render_template('notes.html')
+
+@app.route('/previous-year')
+def previous_year():
+    return render_template('previous_year.html')
+
 
 # -------------------------
 # Run app

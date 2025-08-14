@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resume Generator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #eaf3f3;
+      color: #000;
+      font-size: 14px;
+      line-height: 1.4;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header & Navigation - Same as original */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff;
+      padding: 8px 16px;
+      border-bottom: 1px solid #ddd;
+      min-height: 72px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .logo {
+      width: 72px;
+      height: 72px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .title-container {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .title-container h1 {
+      font-weight: 700;
+      font-size: 18px;
+      color: #003366;
+      margin-bottom: 2px;
+    }
+
+    .title-container p {
+      font-weight: 600;
+      font-size: 13px;
+      color: #a67c00;
+    }
+
+    nav {
+      background: linear-gradient(135deg, #003366, #004a99);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 48px;
+      font-size: 13px;
+      user-select: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 0 16px;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-left a {
+      color: #d4a017;
+      text-decoration: none;
+      font-weight: 700;
+      padding: 12px 20px;
+      background-color: rgba(212, 160, 23, 0.1);
+      border-radius: 4px;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .nav-btn {
+      background: #d4a017;
+      color: #003366;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .nav-btn:hover {
+      background: #b8941a;
+      transform: translateY(-1px);
+    }
+
+    .back-btn {
+      background: rgba(255,255,255,0.2);
+      color: white;
+    }
+
+    .back-btn:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      background: white;
+      padding: 20px 30px;
+      margin: 20px auto;
+      max-width: 1000px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(135deg, #003366, #004a99);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    .step-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: #003366;
+    }
+
+    .step-counter {
+      font-weight: 600;
+    }
+
+    .step-title {
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    /* Form Styles */
+    main {
+      padding: 0 32px 24px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      color: #0a5a0a;
+      max-width: 1000px;
+      margin: 0 auto;
+      background-color: #eaf3f3;
+      min-height: calc(100vh - 116px);
+    }
+
+    .form-container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .form-step {
+      display: none;
+    }
+
+    .form-step.active {
+      display: block;
+    }
+
+    .form-step h2 {
+      font-weight: 600;
+      font-size: 24px;
+      color: #003366;
+      border-bottom: 2px solid #d4a017;
+      padding-bottom: 10px;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .form-section {
+      margin-bottom: 25px;
+    }
+
+    .form-section h3 {
+      color: #003366;
+      font-size: 16px;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #003366;
+      font-weight: 500;
+    }
+
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      outline: none;
+      border-color: #003366;
+      box-shadow: 0 0 0 3px rgba(0,51,102,0.1);
+    }
+
+    .form-group textarea {
+      height: 100px;
+      resize: vertical;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    /* Improved Dynamic Sections */
+    .dynamic-container {
+      background: #f8f9fa;
+      border: 2px dashed #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .dynamic-container:hover {
+      border-color: #003366;
+      background: #f0f8ff;
+    }
+
+    .dynamic-item {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 20px;
+      margin-bottom: 15px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .dynamic-item:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .item-number {
+      background: #003366;
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .remove-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #dc3545;
+      color: white;
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .remove-btn:hover {
+      background: #c82333;
+      transform: scale(1.1);
+    }
+
+    .add-btn {
+      background: linear-gradient(135deg, #28a745, #20c997);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 15px auto;
+      transition: all 0.3s ease;
+    }
+
+    .add-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(40,167,69,0.3);
+    }
+
+    .help-text {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+      font-style: italic;
+      background: #f8f9fa;
+      padding: 8px;
+      border-radius: 4px;
+      border-left: 3px solid #007bff;
+    }
+
+    .example-text {
+      background: #e7f3ff;
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 8px;
+      font-size: 12px;
+      color: #0056b3;
+    }
+
+    /* Form Navigation */
+    .form-navigation {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .nav-button {
+      background: linear-gradient(135deg, #003366, #004a99);
+      color: white;
+      border: none;
+      padding: 15px 35px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+
+    .nav-button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .nav-button.secondary {
+      background: #6c757d;
+    }
+
+    .nav-button.secondary:hover {
+      background: #5a6268;
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, #28a745, #20c997);
+      padding: 18px 45px;
+      font-size: 16px;
+    }
+
+    .submit-btn:hover {
+      background: linear-gradient(135deg, #218838, #1ea080);
+    }
+
+    /* Auto-save indicator */
+    .auto-save {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #28a745;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1000;
+    }
+
+    .auto-save.show {
+      opacity: 1;
+    }
+
+    /* Validation styles */
+    .form-group.error input, .form-group.error textarea {
+      border-color: #dc3545;
+      background-color: #fff5f5;
+    }
+
+    .error-message {
+      color: #dc3545;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      
+      main {
+        padding: 0 16px 16px;
+      }
+      
+      .form-container {
+        padding: 20px;
+      }
+
+      .progress-container {
+        margin: 10px;
+        padding: 15px 20px;
+      }
+
+      .form-navigation {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .nav-button {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .dynamic-item {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <img
+        src="https://imgs.search.brave.com/7BX80CMlQXN7OKx9IL7GeftzG58B64SDmqVjZrOb-SM/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzUwLzEvdmVlci1t/YWRoby1zaW5naC1i/aGFuZGFyaS11dHRh/cmFraGFuZC10ZWNo/bmljYWwtdW4tbG9n/by1wbmdfc2Vla2xv/Z28tNTAyOTU3LnBu/Zw"
+        alt="University Logo"
+        class="logo"
+      />
+      <div class="title-container">
+        <h1>Professional Resume Generator</h1>
+        <p>Create ATS-Optimized Resumes in Minutes</p>
+      </div>
+    </div>
+  </header>
+
+  <nav>
+    <div class="nav-left">
+      <a href="#">RESUME BUILDER</a>
+    </div>
+    <div class="nav-actions">
+      <a href="dashboard" class="nav-btn back-btn">← Back to Dashboard</a>
+    </div>
+  </nav>
+
+  <div class="auto-save" id="autoSave">✓ Progress Saved</div>
+
+  <!-- Progress Bar -->
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="step-info">
+      <span class="step-counter" id="stepCounter">Step 1 of 6</span>
+      <span class="step-title" id="stepTitle">Personal Information</span>
+    </div>
+  </div>
+
+  <main>
+    <div class="form-container">
+      <form action="{{ url_for('generate_resume') }}" method="POST" id="resumeForm">
+        
+        <!-- Step 1: Personal Information -->
+        <div class="form-step active" data-step="1">
+          <h2>📋 Personal Information</h2>
+          <div class="form-section">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="full_name">Full Name *</label>
+                <input type="text" id="full_name" name="full_name" required>
+              </div>
+              <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="phone">Phone Number *</label>
+                <input type="tel" id="phone" name="phone" required>
+              </div>
+              <div class="form-group">
+                <label for="address">Address</label>
+                <input type="text" id="address" name="address">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="linkedin">LinkedIn Profile</label>
+                <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/yourprofile">
+                <div class="help-text">💡 Adding LinkedIn increases your chances by 40%</div>
+              </div>
+              <div class="form-group">
+                <label for="github">GitHub Profile</label>
+                <input type="url" id="github" name="github" placeholder="https://github.com/yourusername">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="website">Personal Website</label>
+              <input type="url" id="website" name="website" placeholder="https://yourwebsite.com">
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Professional Summary -->
+        <div class="form-step" data-step="2">
+          <h2>🎯 Professional Summary</h2>
+          <div class="form-section">
+            <div class="form-group">
+              <label for="objective">Career Objective *</label>
+              <textarea id="objective" name="objective" placeholder="Write a compelling summary that highlights your key skills and career goals..." required></textarea>
+              <div class="help-text">💡 Keep it concise and focused on your value proposition (2-3 lines)</div>
+              <div class="example-text">
+                <strong>Example:</strong> "Results-driven Software Developer with 3+ years of experience in full-stack development. Proficient in React, Node.js, and Python with a proven track record of delivering scalable web applications that improved user engagement by 45%."
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Education -->
+        <div class="form-step" data-step="3">
+          <h2>🎓 Education</h2>
+          <div class="form-section">
+            <div class="dynamic-container">
+              <div id="educationSection">
+                <div class="dynamic-item" data-item="1">
+                  <div class="item-header">
+                    <div class="item-number">1</div>
+                    <h4>Education Details</h4>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Degree *</label>
+                      <input type="text" class="education-degree" placeholder="e.g., B.Tech in Computer Science" required>
+                    </div>
+                    <div class="form-group">
+                      <label>Institution *</label>
+                      <input type="text" class="education-institution" placeholder="e.g., ABC University" required>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Year/Duration *</label>
+                      <input type="text" class="education-year" placeholder="e.g., 2020-2024" required>
+                    </div>
+                    <div class="form-group">
+                      <label>GPA/Percentage</label>
+                      <input type="text" class="education-gpa" placeholder="e.g., 8.5/10 or 85%">
+                    </div>
+                  </div>
+                  <input type="hidden" name="education[]" class="education-combined">
+                </div>
+              </div>
+              <button type="button" class="add-btn" onclick="addEducation()">
+                <span>+</span> Add Another Degree
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Experience & Skills -->
+        <div class="form-step" data-step="4">
+          <h2>💼 Experience & Skills</h2>
+          <div class="form-section">
+            <h3>Work Experience</h3>
+            <div class="dynamic-container">
+              <div id="experienceSection">
+                <div class="dynamic-item" data-item="1">
+                  <div class="item-header">
+                    <div class="item-number">1</div>
+                    <h4>Job Experience</h4>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Job Title</label>
+                      <input type="text" class="experience-title" placeholder="e.g., Software Developer">
+                    </div>
+                    <div class="form-group">
+                      <label>Company Name</label>
+                      <input type="text" class="experience-company" placeholder="e.g., Tech Solutions Inc.">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Duration</label>
+                      <input type="text" class="experience-duration" placeholder="e.g., Jan 2022 - Present">
+                    </div>
+                    <div class="form-group">
+                      <label>Location</label>
+                      <input type="text" class="experience-location" placeholder="e.g., Remote/City">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Key Achievements & Responsibilities</label>
+                    <textarea class="experience-description" placeholder="• Developed web applications using React and Node.js&#10;• Improved system performance by 30%&#10;• Led a team of 3 developers"></textarea>
+                    <div class="help-text">💡 Use bullet points and start with action words like: Developed, Implemented, Managed, Led</div>
+                  </div>
+                  <input type="hidden" name="experience[]" class="experience-combined">
+                </div>
+              </div>
+              <button type="button" class="add-btn" onclick="addExperience()">
+                <span>+</span> Add Another Job
+              </button>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>🛠️ Technical Skills</h3>
+            <div class="form-group">
+              <label for="skills">Skills *</label>
+              <textarea id="skills" name="skills" placeholder="List your technical skills separated by commas" required></textarea>
+              <div class="example-text">
+                <strong>Example:</strong> Python, JavaScript, React, Node.js, HTML/CSS, SQL, Git, AWS, Machine Learning, Data Analysis
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5: Projects -->
+        <div class="form-step" data-step="5">
+          <h2>🚀 Projects</h2>
+          <div class="form-section">
+            <div class="dynamic-container">
+              <div id="projectsSection">
+                <div class="dynamic-item" data-item="1">
+                  <div class="item-header">
+                    <div class="item-number">1</div>
+                    <h4>Project Details</h4>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Project Name</label>
+                      <input type="text" class="project-name" placeholder="e.g., E-commerce Website">
+                    </div>
+                    <div class="form-group">
+                      <label>Technologies Used</label>
+                      <input type="text" class="project-tech" placeholder="e.g., React, Node.js, MongoDB">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Project Link (Optional)</label>
+                    <input type="url" class="project-link" placeholder="https://github.com/yourprofile/project or live demo">
+                  </div>
+                  <div class="form-group">
+                    <label>Project Description & Features</label>
+                    <textarea class="project-description" placeholder="• Built a full-stack e-commerce platform&#10;• Implemented secure payment gateway&#10;• Deployed on AWS with 99% uptime"></textarea>
+                    <div class="help-text">💡 Include key features, technologies, and links to live demos or GitHub</div>
+                  </div>
+                  <input type="hidden" name="projects[]" class="project-combined">
+                </div>
+              </div>
+              <button type="button" class="add-btn" onclick="addProject()">
+                <span>+</span> Add Another Project
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 6: Additional Information -->
+        <div class="form-step" data-step="6">
+          <h2>🏆 Additional Information</h2>
+          <div class="form-section">
+            <h3>🏅 Certifications</h3>
+            <div class="dynamic-container">
+              <div id="certificationsSection">
+                <div class="dynamic-item" data-item="1">
+                  <div class="item-header">
+                    <div class="item-number">1</div>
+                    <h4>Certification Details</h4>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Issuing Organization</label>
+                      <input type="text" class="cert-organization" placeholder="e.g., Amazon, Google, Microsoft">
+                    </div>
+                    <div class="form-group">
+                      <label>Certificate Title</label>
+                      <input type="text" class="cert-title" placeholder="e.g., AWS Certified Developer">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Issue Date</label>
+                      <input type="text" class="cert-date" placeholder="e.g., March 2023">
+                    </div>
+                    <div class="form-group">
+                      <label>Certificate Link (Optional)</label>
+                      <input type="url" class="cert-link" placeholder="https://certificate-link.com">
+                    </div>
+                  </div>
+                  <input type="hidden" name="certifications[]" class="cert-combined">
+                </div>
+              </div>
+              <button type="button" class="add-btn" onclick="addCertification()">
+                <span>+</span> Add Another Certification
+              </button>
+            </div>
+
+            <h3>🏆 Achievements & Awards</h3>
+            <div class="dynamic-container">
+              <div id="achievementsSection">
+                <div class="dynamic-item" data-item="1">
+                  <div class="item-header">
+                    <div class="item-number">1</div>
+                    <h4>Achievement Details</h4>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Achievement Title</label>
+                      <input type="text" class="achievement-title" placeholder="e.g., Winner of College Hackathon">
+                    </div>
+                    <div class="form-group">
+                      <label>Organization/Event</label>
+                      <input type="text" class="achievement-org" placeholder="e.g., ABC University, XYZ Competition">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Date</label>
+                      <input type="text" class="achievement-date" placeholder="e.g., 2023">
+                    </div>
+                    <div class="form-group">
+                      <label>Description (Optional)</label>
+                      <input type="text" class="achievement-desc" placeholder="Brief description of the achievement">
+                    </div>
+                  </div>
+                  <input type="hidden" name="achievements[]" class="achievement-combined">
+                </div>
+              </div>
+              <button type="button" class="add-btn" onclick="addAchievement()">
+                <span>+</span> Add Another Achievement
+              </button>
+            </div>
+
+            <div class="form-group">
+              <label for="languages">🌐 Languages</label>
+              <input type="text" id="languages" name="languages" placeholder="English (Native), Hindi (Fluent), Spanish (Basic)">
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="form-navigation">
+          <button type="button" class="nav-button secondary" id="prevBtn" onclick="changeStep(-1)" disabled>
+            ← Previous
+          </button>
+          <button type="button" class="nav-button" id="nextBtn" onclick="changeStep(1)">
+            Next →
+          </button>
+          <button type="submit" class="nav-button submit-btn" id="submitBtn" style="display: none;">
+            🚀 Generate Resume
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    let currentStep = 1;
+    const totalSteps = 6;
+    let educationCount = 1;
+    let experienceCount = 1;
+    let projectCount = 1;
+
+    const stepTitles = {
+      1: "Personal Information",
+      2: "Professional Summary", 
+      3: "Education",
+      4: "Experience & Skills",
+      5: "Projects",
+      6: "Additional Information"
+    };
+
+    // Auto-save functionality
+    let autoSaveTimer;
+    function autoSave() {
+      clearTimeout(autoSaveTimer);
+      autoSaveTimer = setTimeout(() => {
+        const formData = new FormData(document.getElementById('resumeForm'));
+        const data = {};
+        for (let [key, value] of formData.entries()) {
+          data[key] = value;
+        }
+        
+        fetch('/save-progress', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        }).then(() => {
+          showAutoSaveIndicator();
+        });
+      }, 1000);
+    }
+
+    function showAutoSaveIndicator() {
+      const indicator = document.getElementById('autoSave');
+      indicator.classList.add('show');
+      setTimeout(() => {
+        indicator.classList.remove('show');
+      }, 2000);
+    }
+
+    function updateProgress() {
+      const progress = (currentStep / totalSteps) * 100;
+      document.getElementById('progressFill').style.width = progress + '%';
+      document.getElementById('stepCounter').textContent = `Step ${currentStep} of ${totalSteps}`;
+      document.getElementById('stepTitle').textContent = stepTitles[currentStep];
+    }
+
+    function showStep(step) {
+      // Hide all steps
+      document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+      
+      // Show current step
+      document.querySelector(`[data-step="${step}"]`).classList.add('active');
+      
+      // Update navigation buttons
+      document.getElementById('prevBtn').disabled = step === 1;
+      
+      if (step === totalSteps) {
+        document.getElementById('nextBtn').style.display = 'none';
+        document.getElementById('submitBtn').style.display = 'block';
+      } else {
+        document.getElementById('nextBtn').style.display = 'block';
+        document.getElementById('submitBtn').style.display = 'none';
+      }
+      
+      updateProgress();
+    }
+
+    function changeStep(direction) {
+      const newStep = currentStep + direction;
+      
+      if (newStep >= 1 && newStep <= totalSteps) {
+        // Validate current step before moving forward
+        if (direction > 0 && !validateCurrentStep()) {
+          return;
+        }
+        
+        currentStep = newStep;
+        showStep(currentStep);
+      }
+    }
+
+    function validateCurrentStep() {
+      const currentStepElement = document.querySelector(`[data-step="${currentStep}"]`);
+      const requiredFields = currentStepElement.querySelectorAll('[required]');
+      let isValid = true;
+      
+      // Clear previous errors
+      document.querySelectorAll('.form-group').forEach(group => {
+        group.classList.remove('error');
+        const errorMsg = group.querySelector('.error-message');
+        if (errorMsg) errorMsg.remove();
+      });
+      
+      requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+          const formGroup = field.closest('.form-group');
+          formGroup.classList.add('error');
+          const errorMsg = document.createElement('div');
+          errorMsg.className = 'error-message';
+          errorMsg.textContent = 'This field is required';
+          formGroup.appendChild(errorMsg);
+          isValid = false;
+        }
+      });
+      
+      if (!isValid) {
+        // Smooth scroll to first error
+        const firstError = currentStepElement.querySelector('.form-group.error');
+        if (firstError) {
+          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+      
+      return isValid;
+    }
+
+    function addEducation() {
+      educationCount++;
+      const section = document.getElementById('educationSection');
+      const div = document.createElement('div');
+      div.className = 'dynamic-item';
+      div.setAttribute('data-item', educationCount);
+      div.innerHTML = `
+        <button type="button" class="remove-btn" onclick="removeSection(this)" title="Remove this education">×</button>
+        <div class="item-header">
+          <div class="item-number">${educationCount}</div>
+          <h4>Education Details</h4>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Degree</label>
+            <input type="text" class="education-degree" placeholder="e.g., B.Tech in Computer Science">
+          </div>
+          <div class="form-group">
+            <label>Institution</label>
+            <input type="text" class="education-institution" placeholder="e.g., ABC University">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Year/Duration</label>
+            <input type="text" class="education-year" placeholder="e.g., 2020-2024">
+          </div>
+          <div class="form-group">
+            <label>GPA/Percentage</label>
+            <input type="text" class="education-gpa" placeholder="e.g., 8.5/10 or 85%">
+          </div>
+        </div>
+        <input type="hidden" name="education[]" class="education-combined">
+      `;
+      section.appendChild(div);
+      updateEducationData(div);
+    }
+
+    function addExperience() {
+      experienceCount++;
+      const section = document.getElementById('experienceSection');
+      const div = document.createElement('div');
+      div.className = 'dynamic-item';
+      div.setAttribute('data-item', experienceCount);
+      div.innerHTML = `
+        <button type="button" class="remove-btn" onclick="removeSection(this)" title="Remove this experience">×</button>
+        <div class="item-header">
+          <div class="item-number">${experienceCount}</div>
+          <h4>Job Experience</h4>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Job Title</label>
+            <input type="text" class="experience-title" placeholder="e.g., Software Developer">
+          </div>
+          <div class="form-group">
+            <label>Company Name</label>
+            <input type="text" class="experience-company" placeholder="e.g., Tech Solutions Inc.">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Duration</label>
+            <input type="text" class="experience-duration" placeholder="e.g., Jan 2022 - Present">
+          </div>
+          <div class="form-group">
+            <label>Location</label>
+            <input type="text" class="experience-location" placeholder="e.g., Remote/City">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Key Achievements & Responsibilities</label>
+          <textarea class="experience-description" placeholder="• Developed web applications using React and Node.js&#10;• Improved system performance by 30%&#10;• Led a team of 3 developers"></textarea>
+        </div>
+        <input type="hidden" name="experience[]" class="experience-combined">
+      `;
+      section.appendChild(div);
+      updateExperienceData(div);
+    }
+
+    function addProject() {
+      projectCount++;
+      const section = document.getElementById('projectsSection');
+      const div = document.createElement('div');
+      div.className = 'dynamic-item';
+      div.setAttribute('data-item', projectCount);
+      div.innerHTML = `
+        <button type="button" class="remove-btn" onclick="removeSection(this)" title="Remove this project">×</button>
+        <div class="item-header">
+          <div class="item-number">${projectCount}</div>
+          <h4>Project Details</h4>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Project Name</label>
+            <input type="text" class="project-name" placeholder="e.g., E-commerce Website">
+          </div>
+          <div class="form-group">
+            <label>Technologies Used</label>
+            <input type="text" class="project-tech" placeholder="e.g., React, Node.js, MongoDB">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Project Link (Optional)</label>
+          <input type="url" class="project-link" placeholder="https://github.com/yourprofile/project or live demo">
+        </div>
+        <div class="form-group">
+          <label>Project Description & Features</label>
+          <textarea class="project-description" placeholder="• Built a full-stack e-commerce platform&#10;• Implemented secure payment gateway&#10;• Deployed on AWS with 99% uptime"></textarea>
+        </div>
+        <input type="hidden" name="projects[]" class="project-combined">
+      `;
+      section.appendChild(div);
+      updateProjectData(div);
+    }
+
+    function addCertification() {
+      const section = document.getElementById('certificationsSection');
+      const count = section.children.length + 1;
+      const div = document.createElement('div');
+      div.className = 'dynamic-item';
+      div.setAttribute('data-item', count);
+      div.innerHTML = `
+        <button type="button" class="remove-btn" onclick="removeSection(this)" title="Remove this certification">×</button>
+        <div class="item-header">
+          <div class="item-number">${count}</div>
+          <h4>Certification Details</h4>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Issuing Organization</label>
+            <input type="text" class="cert-organization" placeholder="e.g., Amazon, Google, Microsoft">
+          </div>
+          <div class="form-group">
+            <label>Certificate Title</label>
+            <input type="text" class="cert-title" placeholder="e.g., AWS Certified Developer">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Issue Date</label>
+            <input type="text" class="cert-date" placeholder="e.g., March 2023">
+          </div>
+          <div class="form-group">
+            <label>Certificate Link (Optional)</label>
+            <input type="url" class="cert-link" placeholder="https://certificate-link.com">
+          </div>
+        </div>
+        <input type="hidden" name="certifications[]" class="cert-combined">
+      `;
+      section.appendChild(div);
+      updateCertificationData(div);
+    }
+
+    function addAchievement() {
+      const section = document.getElementById('achievementsSection');
+      const count = section.children.length + 1;
+      const div = document.createElement('div');
+      div.className = 'dynamic-item';
+      div.setAttribute('data-item', count);
+      div.innerHTML = `
+        <button type="button" class="remove-btn" onclick="removeSection(this)" title="Remove this achievement">×</button>
+        <div class="item-header">
+          <div class="item-number">${count}</div>
+          <h4>Achievement Details</h4>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Achievement Title</label>
+            <input type="text" class="achievement-title" placeholder="e.g., Winner of College Hackathon">
+          </div>
+          <div class="form-group">
+            <label>Organization/Event</label>
+            <input type="text" class="achievement-org" placeholder="e.g., ABC University, XYZ Competition">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date</label>
+            <input type="text" class="achievement-date" placeholder="e.g., 2023">
+          </div>
+          <div class="form-group">
+            <label>Description (Optional)</label>
+            <input type="text" class="achievement-desc" placeholder="Brief description of the achievement">
+          </div>
+        </div>
+        <input type="hidden" name="achievements[]" class="achievement-combined">
+      `;
+      section.appendChild(div);
+      updateAchievementData(div);
+    }
+
+    // Data combination functions
+    function updateEducationData(container) {
+      const inputs = container.querySelectorAll('.education-degree, .education-institution, .education-year, .education-gpa');
+      const hiddenInput = container.querySelector('.education-combined');
+      
+      inputs.forEach(input => {
+        input.addEventListener('input', () => {
+          const degree = container.querySelector('.education-degree').value;
+          const institution = container.querySelector('.education-institution').value;
+          const year = container.querySelector('.education-year').value;
+          const gpa = container.querySelector('.education-gpa').value;
+          
+          let combined = '';
+          if (degree) combined += degree;
+          if (institution) combined += (combined ? ' | ' : '') + institution;
+          if (year) combined += (combined ? ' | ' : '') + year;
+          if (gpa) combined += (combined ? ' | GPA: ' : 'GPA: ') + gpa;
+          
+          hiddenInput.value = combined;
+        });
+      });
+    }
+
+    function updateExperienceData(container) {
+      const inputs = container.querySelectorAll('.experience-title, .experience-company, .experience-duration, .experience-location, .experience-description');
+      const hiddenInput = container.querySelector('.experience-combined');
+      
+      inputs.forEach(input => {
+        input.addEventListener('input', () => {
+          const title = container.querySelector('.experience-title').value;
+          const company = container.querySelector('.experience-company').value;
+          const duration = container.querySelector('.experience-duration').value;
+          const location = container.querySelector('.experience-location').value;
+          const description = container.querySelector('.experience-description').value;
+          
+          let combined = '';
+          if (title) combined += title;
+          if (company) combined += (combined ? ' | ' : '') + company;
+          if (duration) combined += (combined ? ' | ' : '') + duration;
+          if (location) combined += (combined ? ' | ' : '') + location;
+          if (description) combined += (combined ? '\n' : '') + description;
+          
+          hiddenInput.value = combined;
+        });
+      });
+    }
+
+    function updateProjectData(container) {
+      const inputs = container.querySelectorAll('.project-name, .project-tech, .project-link, .project-description');
+      const hiddenInput = container.querySelector('.project-combined');
+      
+      inputs.forEach(input => {
+        input.addEventListener('input', () => {
+          const name = container.querySelector('.project-name').value;
+          const tech = container.querySelector('.project-tech').value;
+          const link = container.querySelector('.project-link').value;
+          const description = container.querySelector('.project-description').value;
+          
+          let combined = '';
+          if (name) combined += name;
+          if (tech) combined += (combined ? ' | Technologies: ' : 'Technologies: ') + tech;
+          if (link) combined += (combined ? '\n' : '') + 'Link: ' + link;
+          if (description) combined += (combined ? '\n' : '') + description;
+          
+          hiddenInput.value = combined;
+        });
+      });
+    }
+
+    function updateCertificationData(container) {
+      const inputs = container.querySelectorAll('.cert-organization, .cert-title, .cert-date, .cert-link');
+      const hiddenInput = container.querySelector('.cert-combined');
+      
+      inputs.forEach(input => {
+        input.addEventListener('input', () => {
+          const org = container.querySelector('.cert-organization').value;
+          const title = container.querySelector('.cert-title').value;
+          const date = container.querySelector('.cert-date').value;
+          const link = container.querySelector('.cert-link').value;
+          
+          let combined = '';
+          if (title) combined += title;
+          if (org) combined += (combined ? ' - ' : '') + org;
+          if (date) combined += (combined ? ' (' : '(') + date + ')';
+          if (link) combined += (combined ? ' | Link: ' : 'Link: ') + link;
+          
+          hiddenInput.value = combined;
+        });
+      });
+    }
+
+    function updateAchievementData(container) {
+      const inputs = container.querySelectorAll('.achievement-title, .achievement-org, .achievement-date, .achievement-desc');
+      const hiddenInput = container.querySelector('.achievement-combined');
+      
+      inputs.forEach(input => {
+        input.addEventListener('input', () => {
+          const title = container.querySelector('.achievement-title').value;
+          const org = container.querySelector('.achievement-org').value;
+          const date = container.querySelector('.achievement-date').value;
+          const desc = container.querySelector('.achievement-desc').value;
+          
+          let combined = '';
+          if (title) combined += title;
+          if (org) combined += (combined ? ' - ' : '') + org;
+          if (date) combined += (combined ? ' (' : '(') + date + ')';
+          if (desc) combined += (combined ? ' | ' : '') + desc;
+          
+          hiddenInput.value = combined;
+        });
+      });
+    }
+
+    function removeSection(button) {
+      const item = button.closest('.dynamic-item');
+      item.style.animation = 'fadeOut 0.3s ease';
+      setTimeout(() => {
+        item.remove();
+        updateItemNumbers();
+      }, 300);
+    }
+
+    function updateItemNumbers() {
+      // Update education numbers
+      document.querySelectorAll('#educationSection .dynamic-item').forEach((item, index) => {
+        const number = item.querySelector('.item-number');
+        if (number) number.textContent = index + 1;
+      });
+      
+      // Update experience numbers
+      document.querySelectorAll('#experienceSection .dynamic-item').forEach((item, index) => {
+        const number = item.querySelector('.item-number');
+        if (number) number.textContent = index + 1;
+      });
+      
+      // Update project numbers
+      document.querySelectorAll('#projectsSection .dynamic-item').forEach((item, index) => {
+        const number = item.querySelector('.item-number');
+        if (number) number.textContent = index + 1;
+      });
+    }
+
+    // Form validation on submit
+    document.getElementById('resumeForm').addEventListener('submit', function(e) {
+      if (!validateCurrentStep()) {
+        e.preventDefault();
+        return false;
+      }
+    });
+
+    // Add event listeners for auto-save
+    document.addEventListener('input', autoSave);
+    document.addEventListener('change', autoSave);
+
+    // Initialize
+    showStep(1);
+
+    // Initialize data combination for existing items
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('#educationSection .dynamic-item').forEach(updateEducationData);
+      document.querySelectorAll('#experienceSection .dynamic-item').forEach(updateExperienceData);
+      document.querySelectorAll('#projectsSection .dynamic-item').forEach(updateProjectData);
+      document.querySelectorAll('#certificationsSection .dynamic-item').forEach(updateCertificationData);
+      document.querySelectorAll('#achievementsSection .dynamic-item').forEach(updateAchievementData);
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && e.ctrlKey) {
+        if (currentStep < totalSteps) {
+          changeStep(1);
+        }
+      }
+    });
+
+    // Add CSS animation for fade out
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fadeOut {
+        from { opacity: 1; transform: scale(1); }
+        to { opacity: 0; transform: scale(0.95); }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
