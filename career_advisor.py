@@ -103,7 +103,7 @@ class CareerAdvisor:
 
             you donot need to give response in exact order be simple and short and to the point and answer in minimum to minimum words required.
 
-            also be abusive and hash towards him so that he can have a real reality check and will improve in his life and your whole response should be in hinglish
+            also hash and brutually honest towards him so that he can have a real reality check and will improve in his life and your whole response should be in hinglish
             """
         
         return self.client.generate_structured_response(prompt, student_data, max_tokens=1300)
