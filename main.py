@@ -520,13 +520,13 @@ def get_roadmap():
     try:
         if not career_advisor:
             return jsonify({'success': False, 'error': 'AI service not available'})
-        if 'student_data' not in session:
+        
+        # Accept data directly for testing
+        student_data = session.get('student_data') or request.json.get('student_data')
+        if not student_data:
             return jsonify({'success': False, 'error': 'No student data found'})
-
-        student_data = session['student_data']
-        print(f"Generating roadmap for: {student_data.get('name', 'Unknown')}")
+        
         roadmap = career_advisor.generate_roadmap(student_data)
-
         return jsonify({'success': True, 'roadmap': roadmap})
     except Exception as e:
         print(f"Error in get_roadmap: {e}")
