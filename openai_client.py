@@ -3,7 +3,7 @@ from typing import Dict, Any
 
 class GeminiClient:
     def __init__(self):
-        self.api_key = "AIzaSyDImoE9rvZGL_unKvStQhZTfMUku5KfmXQ"
+        self.api_key = "AIzaSyBmAsDNWvYrgJziJrNhoTtFMxaZjt56VyA"
         self.api_url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent'
     
     def _make_request(self, prompt: str, max_tokens: int) -> str:

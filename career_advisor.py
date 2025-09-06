@@ -53,6 +53,7 @@ class CareerAdvisor:
         # Skip reality check for complete beginners
         if semester in ['1', '2', 'First Year', '1st', '2nd']:
             prompt = f"""
+            firstly u have to respond in hinglish language just like a normal person conversation and answer all the questions in hinglish too
 
             Provide encouraging guidance for {name} who is just starting their journey:
             
@@ -71,6 +72,8 @@ class CareerAdvisor:
             """
         else:
             prompt = f"""
+            firstly u have to respond in hinglish language just like a normal person conversation and answer all the questions in hinglish too
+
             I don't want you to act like a yes-man. I don't want you to always agree with me or sugarcoat things. Instead, I want you to be completely honest, direct, and raw with me. Challenge my opinions and call out my mistakes, flaws in logic, or unrealistic thinking. Don't worry about hurting my feelings - I value truth and growth over comfort. Avoid empty compliments or generic motivational fluff; focus on real, actionable, and evidence-backed advice. Think like a tough coach or a brutally honest friend who cares more about my improvement than my short-term comfort. Always push back when needed, and never bullshit me. Please confirm you understand and will stick to this approach throughout our entire conversation, no matter the topic
 
             Provide an brutally honest, constructive reality check for {name} based on their current situation and roast them so that they will be on right track:
@@ -98,7 +101,9 @@ class CareerAdvisor:
             
             Be honest but constructive. Focus on growth and improvement rather than just criticism.
 
-            you donot need to give response in exact order be simple and short and to the point and answer in minimum to minimum words required
+            you donot need to give response in exact order be simple and short and to the point and answer in minimum to minimum words required.
+
+            also be abusive and hash towards him so that he can have a real reality check and will improve in his life and your whole response should be in hinglish
             """
         
         return self.client.generate_structured_response(prompt, student_data, max_tokens=1300)
